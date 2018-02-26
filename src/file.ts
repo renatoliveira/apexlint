@@ -9,4 +9,13 @@ export class File {
             process.exit()
         }
     }
+
+    loadFiles (folderPath: String) {
+        try {
+            // load files in loop here?
+        } catch (e) {
+            console.error("❗️ Something went wrong!")
+            console.error(e)
+        }
+    }
 }
