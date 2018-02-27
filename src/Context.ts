@@ -15,10 +15,11 @@ export class Context {
 
     constructor (lines?: Array<String>) {
         this.content = new Array<String>()
-        if (lines)
-            this.content = lines
         this.contexts = new Array<Context>()
-        this.getInnerContexts()
+        if (lines) {
+            this.content = lines
+            this.getInnerContexts()
+        }
     }
 
     public getInnerContexts (): void {
@@ -46,5 +47,41 @@ export class Context {
         }
         if (this.contexts.length)
             console.log(this.contexts)
+        this.sortContexts();
+    }
+    
+    private sortContexts() {
+        var counter = 0
+        while (true) {
+            var otherContext = this.contexts[counter + 1];
+            if (this.contexts[counter] && otherContext) {
+                if (this.isParent(otherContext)) {
+                    this.contexts.push(otherContext)
+                } else if (this.isChild(otherContext)) {
+                    // ...
+                }
+            }
+            counter++
+            if (!otherContext)
+                break
+        }
+    }
+
+    public isChild (otherContext: Context): boolean {
+        if (otherContext.startLine < this.startLine &&
+            otherContext.endline > this.endline) {
+            return true
+        }
+        return false
+    }
+
+    public isParent (otherContext: Context): boolean {
+        if (otherContext.startLine > this.startLine &&
+            otherContext.startLine < this.endline &&
+            otherContext.endline < this.endline &&
+            otherContext.endline > this.startLine) {
+            return true
+        }
+        return false
     }
 }
