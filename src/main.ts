@@ -12,4 +12,5 @@ if (fs.lstatSync(pathString).isDirectory()) {
     console.log("📂 Running on folder " + process.argv[2] + "...")
 } else {
     console.log("📄 Running on file " + process.argv[2] + "...")
+    var apexfile = new file.ApexFile(pathString)
 }

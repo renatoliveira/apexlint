@@ -1,9 +1,18 @@
 import * as fs from "fs"
 
-export class File {
-    loadFile (filePath: String) {
+export class ApexFile {
+
+    public filePath: fs.PathLike
+
+    constructor (filePath: fs.PathLike) {
+        this.filePath = filePath
+        this.loadFile()
+    }
+
+    loadFile () {
         try {
-            var fileToRead = fs.readFileSync(process.argv[2], 'utf-8')
+            var fileToRead = fs.readFileSync(this.filePath, 'utf-8')
+            console.log(fileToRead)
         } catch (e) {
             console.error("❗️ File couldn't be read.")
             process.exit()
