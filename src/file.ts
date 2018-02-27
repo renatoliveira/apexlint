@@ -24,6 +24,6 @@ export class ApexFile {
     }
 
     private analyze(fileAsString: String) {
-        // this.mainContext = new Context(fileAsString.split('\n'))
+        this.mainContext = new Context(fileAsString.split('\n'))
     }
 }

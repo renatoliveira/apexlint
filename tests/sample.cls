@@ -21,6 +21,7 @@ public without sharing class SomeWithoutSharingClass {
     public void methodWithLoop () {
         for (Object o : OtherClass.getObjects()) {
             methodWithoutReturnAndArgs();
+            SomeWithoutSharingClass.staticMethodWithoutReturnAndArgs();
         }
     }
 

@@ -7,13 +7,44 @@ enum ContextType {
 }
 
 export class Context {
-    public kind: ContextType
-    public startLine: number
-    public endLine: number
     public content: Array<String>
     public contexts: Array<Context>
 
-    public toString () {
-        return `Context (S:${this.startLine}, E:${this.endLine}, count: ${this.content.length})`
+    public startLine: number
+    public endline: number
+
+    constructor (lines?: Array<String>) {
+        this.content = new Array<String>()
+        if (lines)
+            this.content = lines
+        this.contexts = new Array<Context>()
+        this.getInnerContexts()
+    }
+
+    public getInnerContexts (): void {
+        var newcontexts = new Array<Context>()
+        var hasInnerContext: boolean = false
+        var lastContextLine: number = undefined
+
+        var counter: number = 0
+        while (true) {
+            var line = this.content[counter]
+            if (!line)
+                break
+            if (line.search('{') != -1) {
+                var ctx = new Context()
+                ctx.startLine = counter + 1
+                newcontexts.push(ctx)
+            }
+            if (line.search('}') != -1) {
+                var ctx = newcontexts[newcontexts.length-1]
+                ctx.endline = counter + 1
+                this.contexts.push(ctx)
+                newcontexts.pop()
+            }
+            counter++
+        }
+        if (this.contexts.length)
+            console.log(this.contexts)
     }
 }
