@@ -18,5 +18,11 @@ public without sharing class SomeWithoutSharingClass {
         // no args to see here
     }
 
+    public void methodWithLoop () {
+        for (Object o : OtherClass.getObjects()) {
+            methodWithoutReturnAndArgs();
+        }
+    }
+
     // TODO: Create methods with return
 }
