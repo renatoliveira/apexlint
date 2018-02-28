@@ -15,25 +15,51 @@ export class ApexFile {
         this.report()
     }
 
+    /** 
+     * Loads the file from disk. Prints error message if the file can't
+     * be read.
+     */
     private loadFile () {
         try {
             var fileToRead = fs.readFileSync(this.filePath, 'utf-8')
             return fileToRead
         } catch (e) {
-            console.error("❗️ File couldn't be read.")
-            process.exit()
+            console.error("❗️ File '" + this.filePath + "' couldn't be read.")
         }
         return ''
     }
 
-    private analyze(fileAsString: String): void {
+    /**
+     * Analyze the file, passing it to the Context class which will
+     * handle the analysis.
+     * 
+     * @param fileAsString file as string
+     */
+    private analyze(fileAsString: string): void {
+        fileAsString = this.replaceStrings(fileAsString)
         this.mainContext = new Context(fileAsString.split('\n'))
     }
 
+    /**
+     * Report the errors found on the screen.
+     */
     private report (): void {
         var errors = this.mainContext.getErrors()
         for (const err of errors) {
-            console.error(err+'')
+            console.error('❌ '+err)
         }
+        if (errors.length == 0) {
+            console.log('✅ No errors found.')
+        }
+    }
+
+    /**
+     * Replace the strings inside the file, for example the strings
+     * inside System.debug() statements.
+     * 
+     * @param fileAsString file string
+     */
+    private replaceStrings (fileAsString: string): string {
+        return fileAsString.replace(/'.{1,}'/g, '')
     }
 }
