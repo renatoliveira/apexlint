@@ -8,6 +8,10 @@ enum ContextType {
     ITERATOR
 }
 
+/**
+ * The Context class represents code inside brackets.
+ * Valid contexts are represented on the enumerator above.
+ */
 export class Context {
     public content: Array<String>
     public contexts: Array<Context>
@@ -30,6 +34,10 @@ export class Context {
         }
     }
 
+    /** 
+     * Detects and stores the inner contexts (methods inside a class
+     * are inner contexts of said class, for example).
+     */
     public getInnerContexts (): void {
         var newcontexts = new Array<Context>()
         var hasInnerContext: boolean = false
@@ -62,6 +70,10 @@ export class Context {
             console.log(this.contexts)
     }
     
+    /** 
+     * Sorts the contexts into parent-children. This will probably ease the
+     * organization for methods inside classes, for example.
+     */
     private sortContexts() {
         var counter = 0
         while (true) {
@@ -80,6 +92,10 @@ export class Context {
         }
     }
 
+    /**
+     * Indicates if this context is a child of the other context.
+     * @param otherContext context to compare
+     */
     public isChild (otherContext: Context): boolean {
         if (otherContext.startLine < this.startLine &&
             otherContext.endline > this.endline) {
@@ -88,6 +104,11 @@ export class Context {
         return false
     }
 
+
+    /**
+     * Indicates if this context is a parent of the other context.
+     * @param otherContext context to compare
+     */
     public isParent (otherContext: Context): boolean {
         if (otherContext.startLine > this.startLine &&
             otherContext.startLine < this.endline &&
@@ -114,6 +135,9 @@ export class Context {
         }
     }
 
+    /**
+     * Returns the errors found in this context and its children.
+     */
     public getErrors (): Array<LinterError> {
         var errors = Array<LinterError>()
         if (this.contexts) {
