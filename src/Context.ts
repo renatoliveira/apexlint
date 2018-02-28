@@ -30,6 +30,10 @@ export class Context {
         var counter: number = 0
         while (true) {
             var line = this.content[counter]
+            if (line == '') {
+                counter++
+                continue
+            }
             if (!line)
                 break
             if (line.search('{') != -1) {
@@ -45,25 +49,26 @@ export class Context {
             }
             counter++
         }
+        this.sortContexts();
         if (this.contexts.length)
             console.log(this.contexts)
-        this.sortContexts();
     }
     
     private sortContexts() {
         var counter = 0
         while (true) {
-            var otherContext = this.contexts[counter + 1];
-            if (this.contexts[counter] && otherContext) {
-                if (this.isParent(otherContext)) {
-                    this.contexts.push(otherContext)
-                } else if (this.isChild(otherContext)) {
-                    // ...
-                }
+            var ctxA = this.contexts[counter]
+            var ctxB = this.contexts[counter+1]
+            if (!ctxB)
+                break
+            if (ctxA.isParent(ctxB)) {
+                ctxA.contexts.push(ctxB)
+                this.contexts.splice(counter+1, 1)
+            } else if (ctxA.isChild(ctxB)) {
+                ctxB.contexts.push(ctxA)
+                this.contexts.splice(counter, 1)
             }
             counter++
-            if (!otherContext)
-                break
         }
     }
 
