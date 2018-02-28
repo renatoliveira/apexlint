@@ -1,3 +1,5 @@
+import { LinterError } from "./LinterError"
+
 enum ContextType {
     FUNCTION,
     METHOD,
@@ -9,16 +11,22 @@ enum ContextType {
 export class Context {
     public content: Array<String>
     public contexts: Array<Context>
+    public errors: Array<LinterError>
 
     public startLine: number
     public endline: number
 
+    private skip: boolean
+
     constructor (lines?: Array<String>) {
         this.content = new Array<String>()
         this.contexts = new Array<Context>()
+        this.errors = new Array<LinterError>()
         if (lines) {
             this.content = lines
-            this.getInnerContexts()
+            this.validateContext()
+            if (!this.skip)
+                this.getInnerContexts()
         }
     }
 
@@ -88,5 +96,31 @@ export class Context {
             return true
         }
         return false
+    }
+
+    /**
+     * Validates the context. Any valid class should have the same amount
+     * of brackets.
+     * TODO: Escape string literals.
+     */
+    private validateContext (): void {
+        var ctx = this.content.join('')
+        var leftBrackets = ctx.match(/{/g).length
+        var rightBrackets = ctx.match(/}/g).length
+
+        if (leftBrackets != rightBrackets) {
+            this.errors.push(new LinterError(-1, 'Brackets ("{" and "}") count don\'t match.'))
+            this.skip = true
+        }
+    }
+
+    public getErrors (): Array<LinterError> {
+        var errors = Array<LinterError>()
+        if (this.contexts) {
+            this.contexts.forEach(ctx => {
+                errors.concat(ctx.getErrors())
+            });
+        }
+        return this.errors.concat(errors)
     }
 }
