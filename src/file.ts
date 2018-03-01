@@ -12,7 +12,6 @@ export class ApexFile {
     constructor (filePath: fs.PathLike) {
         this.filePath = filePath
         this.analyze(this.loadFile())
-        this.report()
     }
 
     /** 
@@ -41,16 +40,10 @@ export class ApexFile {
     }
 
     /**
-     * Report the errors found on the screen.
+     * Return the errors found on the screen.
      */
-    private report (): void {
-        var errors = this.mainContext.getErrors()
-        for (const err of errors) {
-            console.error('❌ '+err)
-        }
-        if (errors.length == 0) {
-            console.log('✅ No errors found.')
-        }
+    public report (): Array<LinterError> {
+        return this.mainContext.getErrors()
     }
 
     /**

@@ -13,24 +13,24 @@ enum ContextType {
  * Valid contexts are represented on the enumerator above.
  */
 export class Context {
-    public content: Array<String>
+    public content: Array<string>
     public contexts: Array<Context>
     public errors: Array<LinterError>
-
+    public kind: ContextType
     public startLine: number
     public endline: number
-
     private skip: boolean
 
-    constructor (lines?: Array<String>) {
-        this.content = new Array<String>()
+    constructor (lines?: Array<string>) {
+        this.content = new Array<string>()
         this.contexts = new Array<Context>()
         this.errors = new Array<LinterError>()
         if (lines) {
             this.content = lines
             this.validateContext()
-            if (!this.skip)
+            if (!this.skip) {
                 this.getInnerContexts()
+            }
         }
     }
 
@@ -65,9 +65,10 @@ export class Context {
             }
             counter++
         }
-        this.sortContexts();
-        if (this.contexts.length)
-            console.log(this.contexts)
+        this.sortContexts()
+        this.getKind()
+        // if (this.contexts.length)
+            // console.log(this.contexts)
     }
     
     /** 
@@ -143,8 +144,20 @@ export class Context {
         if (this.contexts) {
             this.contexts.forEach(ctx => {
                 errors.concat(ctx.getErrors())
-            });
+            })
         }
         return this.errors.concat(errors)
+    }
+
+    /**
+     * Tries to get the context type based on its first line.
+     */
+    public getKind (): void {
+        var startLine: string = this.content[this.startLine]
+        if (startLine != undefined) {
+            if (startLine.match(/class/g)) {
+                this.kind = ContextType.CLASS
+            }
+        }
     }
 }
