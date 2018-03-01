@@ -16,8 +16,10 @@ if (fs.lstatSync(pathString).isDirectory()) {
     console.log("📂 Running on folder " + process.argv[2] + "...")
     fs.readdir(pathString, (err, files) => {
         files.forEach(fileOnFolder => {
-            var apexfile = new ApexFile(pathString + '/' + fileOnFolder)
-            Results.errors.concat(apexfile.report())
+            if (fileOnFolder.match(/cls$/g)) {
+                var apexfile = new ApexFile(pathString + '/' + fileOnFolder)
+                Results.errors.concat(apexfile.report())
+            }
         })
     })
 } else {
