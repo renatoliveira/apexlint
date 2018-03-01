@@ -1,5 +1,5 @@
 import * as fs from "fs"
-import * as file from "./file"
+import { ApexFile } from "./ApexFile"
 import { Results } from "./Results"
 import { LinterError } from "./LinterError";
 
@@ -16,13 +16,13 @@ if (fs.lstatSync(pathString).isDirectory()) {
     console.log("📂 Running on folder " + process.argv[2] + "...")
     fs.readdir(pathString, (err, files) => {
         files.forEach(fileOnFolder => {
-            var apexfile = new file.ApexFile(pathString + '/' + fileOnFolder)
+            var apexfile = new ApexFile(pathString + '/' + fileOnFolder)
             Results.errors.concat(apexfile.report())
         })
     })
 } else {
     console.log("📄 Running on file " + process.argv[2] + "...")
-    var apexfile = new file.ApexFile(pathString)
+    var apexfile = new ApexFile(pathString)
     Results.errors.concat(apexfile.report())
 }
 
