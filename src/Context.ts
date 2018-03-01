@@ -40,24 +40,21 @@ export class Context {
      */
     public getInnerContexts (): void {
         var newcontexts = new Array<Context>()
-        var hasInnerContext: boolean = false
-        var lastContextLine: number = undefined
-
         var counter: number = 0
         while (true) {
             var line = this.content[counter]
-            if (line == '') {
+            if (!line)
+                break
+            if (line == '' || this.isInlineContext(line)) {
                 counter++
                 continue
             }
-            if (!line)
-                break
             if (line.search('{') != -1) {
                 var ctx = new Context()
                 ctx.startLine = counter + 1
                 newcontexts.push(ctx)
             }
-            if (line.search('}') != -1) {
+            if (line.match(/(.+)?}$(\n|\r|\S)?/g)) {
                 var ctx = newcontexts[newcontexts.length-1]
                 ctx.endline = counter + 1
                 this.contexts.push(ctx)
@@ -67,8 +64,28 @@ export class Context {
         }
         this.sortContexts()
         this.getKind()
-        // if (this.contexts.length)
-            // console.log(this.contexts)
+    }
+
+    /**
+     * Detects if the line contains an inline context, like a small map/list being
+     * set up for a method.
+     * 
+     * E.g:
+     *      someMethod(new List<String>{'hello', 'world'}) at a line would start
+     * a new context because of the brackets, but it is just a list assignment,
+     * not worthy of a context analysis at this moment.
+     * 
+     * @param line file line
+     */
+    private isInlineContext (line: string) {
+        let rightBracketMatches = line.match(/{/g)
+        let leftBracketMatches = line.match(/}/g)
+        var rightBrackets: number = rightBracketMatches != null ? line.match(/{/g).length : 0
+        var leftBrackets: number = leftBracketMatches != null ? line.match(/}/g).length : 0
+        if (leftBrackets != 0 && rightBrackets == leftBrackets) {
+            return true
+        }
+        return false
     }
     
     /** 
