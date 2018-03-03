@@ -1,4 +1,5 @@
 import { LinterError } from "./LinterError"
+import { Rules } from "./Rules"
 
 enum ContextType {
     FUNCTION,
@@ -31,6 +32,7 @@ export class Context {
             if (!this.skip) {
                 this.getInnerContexts()
             }
+            this.runRules();
         }
     }
 
@@ -154,6 +156,18 @@ export class Context {
     }
 
     /**
+     * Adds a new error to the context's array of errors.
+     * 
+     * @param err new error to the error array
+     */
+    public addError (err: LinterError): void {
+        if (this.errors == undefined) {
+            this.errors = new Array<LinterError>()
+        }
+        this.errors.push(err)
+    }
+
+    /**
      * Returns the errors found in this context and its children.
      */
     public getErrors (): Array<LinterError> {
@@ -176,5 +190,9 @@ export class Context {
                 this.kind = ContextType.CLASS
             }
         }
+    }
+
+    public runRules (): void {
+        Rules.lineLimit(this)
     }
 }

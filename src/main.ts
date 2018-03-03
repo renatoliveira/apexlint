@@ -10,7 +10,7 @@ if (process.argv.length < 3) {
 var mode: String = null
 var pathString: fs.PathLike = process.argv[2]
 
-Results.errors = new Array<LinterError>()
+var errors = new Results()
 
 if (fs.lstatSync(pathString).isDirectory()) {
     console.log("📂 Running on folder " + process.argv[2] + "...")
@@ -18,14 +18,14 @@ if (fs.lstatSync(pathString).isDirectory()) {
         files.forEach(fileOnFolder => {
             if (fileOnFolder.match(/cls$/g)) {
                 var apexfile = new ApexFile(pathString + '/' + fileOnFolder)
-                Results.errors.concat(apexfile.report())
+                errors.addErrors(apexfile.report())
             }
         })
     })
 } else {
     console.log("📄 Running on file " + process.argv[2] + "...")
     var apexfile = new ApexFile(pathString)
-    Results.errors.concat(apexfile.report())
+    errors.addErrors(apexfile.report())
 }
 
-Results.report()
+errors.report()

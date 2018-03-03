@@ -1,9 +1,17 @@
 import { LinterError } from "./LinterError"
 
 export class Results {
-    public static errors: Array<LinterError>
+    public errors: Array<LinterError>
 
-    public static report (): void {
+    constructor () {
+        this.errors = new Array<LinterError>()
+    }
+
+    public addErrors (errors: Array<LinterError>): void {
+        this.errors = this.errors.concat(errors)
+    }
+
+    public report (): void {
         if (this.errors.length == 0) {
             console.log('✅ No errors found.')
         }
