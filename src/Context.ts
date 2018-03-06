@@ -69,6 +69,14 @@ export class Context {
         }
         this.sortContexts()
         this.getKind()
+        this.setLines()
+    }
+
+    private setLines (): void {
+        if (this.startLine == undefined && this.endline == undefined) {
+            this.startLine = 1
+            this.endline = this.content.length
+        }
     }
 
     /**
@@ -205,6 +213,10 @@ export class Context {
      */
     public getSOQLCount (): number {
         return this.soqlQueriesCount
+    }
+
+    public getLineCount (): number {
+        return this.endline - this.startLine
     }
 
     private findQueries (lines: Array<string>): void {

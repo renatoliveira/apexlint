@@ -3,7 +3,17 @@ import { Rules } from "../src/Rules"
 import { Context } from "../src/Context"
 
 describe("Context rules", () => {
-    describe("Line length.", () => {
+    describe("Comments", () => {
+        it("Should ignore lines starting with '//'.", () => {
+            let commentedContext = new Context(new Array<string>(
+                'global class CommentedClass {',
+                '    // this is a little comment',
+                '}'
+            ))
+            expect(commentedContext.getLineCount()).to.equal(2)
+        })
+    }),
+    describe("Line length", () => {
         it("Should not log an error because there is no line with more than 120 characters.", () => {
             let clearContext = new Context(new Array<string>(
                 'global class AClass {',
@@ -23,8 +33,8 @@ describe("Context rules", () => {
     })
 })
 
-describe("Should detect SOQL inside a context.", () => {
-    describe("Should know when the context has a SOQL query.", () => {
+describe("SOQL queries.", () => {
+    describe("Should know when the context has a SOQL query", () => {
         it("Should indicate that the provided context has SOQL query inside of it.", () => {
             let queryContext = new Context(new Array<string>(
                 'private class QueryClass {',
@@ -43,6 +53,7 @@ describe("Should detect SOQL inside a context.", () => {
                 '    }',
                 '}'
             ))
+            expect(queryContext.getSOQLCount()).to.equal(0)
         })
     })
 })
