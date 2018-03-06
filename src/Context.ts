@@ -153,7 +153,6 @@ export class Context {
     /**
      * Validates the context. Any valid class should have the same amount
      * of brackets.
-     * TODO: Escape string literals.
      */
     private validateContext (): void {
         var ctx = this.content.join('')
