@@ -22,3 +22,27 @@ describe("Context rules", () => {
         })
     })
 })
+
+describe("Should detect SOQL inside a context.", () => {
+    describe("Should know when the context has a SOQL query.", () => {
+        it("Should indicate that the provided context has SOQL query inside of it.", () => {
+            let queryContext = new Context(new Array<string>(
+                'private class QueryClass {',
+                '    public List<Account> getAccounts() {',
+                '        return [SELECT Id FROM Account];',
+                '    }',
+                '}'
+            ))
+            expect(queryContext.getSOQLCount()).to.equal(1)
+        }),
+        it("Should not indicate that the provided context has a SOQL query inside of it.", () => {
+            let queryContext = new Context(new Array<string>(
+                'public class QuerylessClass {',
+                '    public List<Account> getAccounts () {',
+                '        return new List<Account>();',
+                '    }',
+                '}'
+            ))
+        })
+    })
+})

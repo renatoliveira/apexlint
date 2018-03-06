@@ -20,7 +20,9 @@ export class Context {
     public kind: ContextType
     public startLine: number
     public endline: number
-    private skip: boolean
+    
+    private skipThisContext: boolean
+    private soqlQueriesCount: number
 
     constructor (lines?: Array<string>) {
         this.content = new Array<string>()
@@ -29,9 +31,10 @@ export class Context {
         if (lines) {
             this.content = lines
             this.validateContext()
-            if (!this.skip) {
+            if (!this.skipThisContext) {
                 this.getInnerContexts()
             }
+            this.findQueries(this.content)
             this.runRules();
         }
     }
@@ -151,7 +154,7 @@ export class Context {
 
         if (leftBrackets != rightBrackets) {
             this.errors.push(new LinterError(-1, 'Brackets ("{" and "}") count don\'t match.'))
-            this.skip = true
+            this.skipThisContext = true
         }
     }
 
@@ -194,5 +197,23 @@ export class Context {
 
     public runRules (): void {
         Rules.lineLimit(this)
+    }
+
+    /** 
+     * If the context contains any SOQL query inside of it, this should return
+     * the number of detected queries found in the context.
+     */
+    public getSOQLCount (): number {
+        return this.soqlQueriesCount
+    }
+
+    private findQueries (lines: Array<string>): void {
+        var queryCount: number = 0
+        lines.forEach(line => {
+            if (line.match(/\[(\n?\s+?\t?)?SELECT/g)) {
+                queryCount++
+            }
+        })
+        this.soqlQueriesCount = queryCount
     }
 }

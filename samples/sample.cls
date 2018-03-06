@@ -25,5 +25,18 @@ public without sharing class SomeWithoutSharingClass {
         }
     }
 
+    public List<Account> methodWithOneLineSOQL () {
+        return [SELECT Id FROM Account];
+    }
+
+    public List<Account> methodWithMultipleLinesSOQL () {
+        return [
+            SELECT
+            Id
+            ,Name
+            FROM Account
+        ];
+    }
+
     // TODO: Create methods with return
 }
