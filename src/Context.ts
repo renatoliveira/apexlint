@@ -226,12 +226,8 @@ export class Context {
      * @param lines context content
      */
     private findQueries (lines: Array<string>): void {
-        var queryCount: number = 0
-        lines.forEach(line => {
-            if (line.match(/\[(\n?\s+?\t?)?SELECT/g)) {
-                queryCount++
-            }
-        })
-        this.soqlQueriesCount = queryCount
+        var fileAsString = lines.join('')
+        let matches = fileAsString.match(/\[(\n?\s+?\t?)?SELECT/gi)
+        this.soqlQueriesCount = matches != null ? matches.length : 0
     }
 }
