@@ -214,10 +214,17 @@ export class Context {
         return this.soqlQueriesCount
     }
 
+    /**
+     * Return the line count in this context.
+     */
     public getLineCount (): number {
         return this.endline - this.startLine
     }
 
+    /**
+     * Detects SOQL queries inside the context.
+     * @param lines context content
+     */
     private findQueries (lines: Array<string>): void {
         var queryCount: number = 0
         lines.forEach(line => {
