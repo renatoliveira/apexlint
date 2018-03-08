@@ -30,6 +30,38 @@ describe("Context rules", () => {
             ))
             expect(erroredContext.getErrors().length).to.equal(1)
         })
+    }),
+    describe("Assingment on the same line.", () => {
+        it("Should log an error when line assignments are done in multiple lines.", () => {
+            let erroredContextEqualSignOnSameLine = new Context(new Array<string>(
+                'global class AClass {',
+                '    global void randomMethod () {',
+                '        global static variable = ',
+                '            \'FOO\';',
+                '    }',
+                '}'
+            ))
+            let erroredContextEqualSignOnLineBelow = new Context(new Array<string>(
+                'global class AClass {',
+                '    global void randomMethod () {',
+                '        global static variable = ',
+                '            \'FOO\';',
+                '    }',
+                '}'
+            ))
+            expect(erroredContextEqualSignOnSameLine.getErrors().length).to.equal(1)
+            expect(erroredContextEqualSignOnLineBelow.getErrors().length).to.equal(1)
+        }),
+        it("Should NOT log an error otherwise.", () => {
+            let clearContext = new Context(new Array<string>(
+                'global class AClass {',
+                '    global void randomMethod () {',
+                '        String variable = \'FOO\';',
+                '    }',
+                '}'
+            ))
+            expect(clearContext.getErrors().length).to.equal(0)
+        })
     })
 })
 
