@@ -115,10 +115,11 @@ describe("SOQL queries.", () => {
             let queryContext = new Context(new Array<string>(
                 'private class QueryClass {',
                 '    public List<Account> getAccounts() {',
-                '        List<Case> cases = [SELECT Id, Subject FROM Case];',
+                '        List<Case> cases = [SELECT Id, Subject FROM Case WHERE Something__c = \'Email\'];',
                 '    }',
                 '}'
             ))
+            expect(queryContext.getSOQLCount()).to.equal(1)
             expect(queryContext.getErrors().length).to.equal(1)
         }),
         it("Should give an error about one-liners with more than one condition on the query.", () => {
@@ -129,6 +130,20 @@ describe("SOQL queries.", () => {
                 '    }',
                 '}'
             ))
+            expect(queryContext.getSOQLCount()).to.equal(1)
+            expect(queryContext.getErrors().length).to.equal(1)
+        })
+    }),
+    describe("Queries without condition.", () => {
+        it("Should accuse an error with a query without condition", () => {
+            let queryContext = new Context(new Array<string>(
+                'private class QueryClass {',
+                '    public List<Account> getAccounts() {',
+                '        return [SELECT Id FROM Account];',
+                '    }',
+                '}'
+            ))
+            expect(queryContext.getSOQLCount()).to.equal(1)
             expect(queryContext.getErrors().length).to.equal(1)
         })
     })
