@@ -109,5 +109,18 @@ describe("SOQL queries.", () => {
             ))
             expect(queryContext.getSOQLCount()).to.equal(0)
         })
+    }),
+    describe("About queries on a single line.", () => {
+        it("Should give an error about one-liners with more than one field or condition on the query.", () => {
+            let queryContext = new Context(new Array<string>(
+                'private class QueryClass {',
+                '    public List<Account> getAccounts() {',
+                '        List<Case> cases = [SELECT Id, Subject FROM Case];',
+                '        return [SELECT Id FROM Account WHERE Name = \'Account\' AND NumberField__c > 0];',
+                '    }',
+                '}'
+            ))
+            expect(queryContext.getErrors().length).to.equal(2)
+        })
     })
 })
