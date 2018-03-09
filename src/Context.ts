@@ -203,9 +203,7 @@ export class Context {
     }
 
     public runRules (): void {
-        Rules.lineLimit(this)
-        Rules.assignmentOnSameLine(this)
-        
+        Rules.run(this)
     }
 
     /** 
