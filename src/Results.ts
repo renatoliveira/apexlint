@@ -13,10 +13,10 @@ export class Results {
 
     public report (): void {
         if (this.errors.length == 0) {
-            console.log('✅ No errors found.')
+            console.log('✅ - No errors found.')
         }
         this.errors.forEach(err => {
-            console.error('❌ ' + err)
+            console.error('❌ - ' + err)
         })
     }
 }
