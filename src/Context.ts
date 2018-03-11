@@ -21,6 +21,7 @@ export class Context {
     public startLine: number
     public endline: number
     
+    private kind: ContextType
     private skipThisContext: boolean
     private soqlQueriesCount: number
 
