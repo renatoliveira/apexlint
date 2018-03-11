@@ -17,7 +17,6 @@ export class Context {
     public content: Array<string>
     public contexts: Array<Context>
     public errors: Array<LinterError>
-    public kind: ContextType
     public startLine: number
     public endline: number
     
