@@ -1,6 +1,8 @@
 {
     "compilerOptions": {
         "sourceMap": true,
-        "outDir": "output"
+        "outDir": "output",
+        "target": "es6",
+        "removeComments": true
     }
 }
