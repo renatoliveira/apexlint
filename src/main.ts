@@ -1,3 +1,4 @@
+#! /usr/local/bin/node
 import * as fs from "fs"
 import { ApexFile } from "./ApexFile"
 import { Results } from "./Results"
@@ -5,6 +6,7 @@ import { LinterError } from "./LinterError";
 
 if (process.argv.length < 3) {
     console.error("❗️ Should specify which file or folder to run.")
+    process.exit()
 }
 
 var mode: String = null

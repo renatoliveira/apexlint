@@ -16,6 +16,11 @@
     "typescript": "^2.7.2"
   },
   "scripts": {
-    "test": "mocha -r ts-node/register tests/*.spec.ts"
-  }
+    "test": "mocha -r ts-node/register tests/*.spec.ts",
+    "build": "tsc src/Main.ts --outDir output"
+  },
+  "bin" : {
+    "apexlint": "./output/main.js"
+  },
+  "preferGlobal": true
 }
