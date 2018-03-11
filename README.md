@@ -9,14 +9,39 @@ I'm building this to assist me with writing better code for the Salesforce ☁ p
 
 Other reasons to create this thing is to learn how to write a linter, because there are no How To's online (at least not as of 4 Mar 2018).
 
-# Things that are nice and would be nice to have.
+# Some things that are nice and would be nice to have.
 
 * [ ] Be able to run the linter from the command line (should be a priority when getting more items done in this list)
 * [x] Make the linter read and sort the code by contexts.
 * [ ] Make the linter able to distinguish between context types (class scope, method scope, etc).
 * [x] Basic rules with error outputs, like maximum line length.
-* [ ] Detect SOQL statements used in one line and inside `for` loops as list variable.
+* [x] Detect SOQL statements used in one line
+* [ ] Detect SOQL statements inside `for` loops as list variable.
 * [ ] Basic detection of SOQL statements inside loop structures.
+* and more...
+
+# Installation
+
+This tool can be installed with npm or yarn, and you should link it for it to be available globally.
+
+Like this on npm:
+
+```npm install apexlint -g```
+
+Or this with yarn:
+
+```yarn global add apexlint```
+
+# Uninstall
+
+Using npm, you can uninstall it by issuing the same install command, but r
+replacing `install` with `uninstall`:
+
+```npm uninstall apexlint -g```
+
+or, with yarn:
+
+```yarn global remove apexlint```
 
 # License
 
