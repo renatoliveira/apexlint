@@ -19,7 +19,7 @@
     "test": "mocha -r ts-node/register tests/*.spec.ts",
     "build": "tsc src/Main.ts --outDir output"
   },
-  "bin" : {
+  "bin": {
     "apexlint": "./output/main.js"
   },
   "preferGlobal": true
