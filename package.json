@@ -25,11 +25,7 @@
     "build-dist": "tsc -p tsconfig-dist.json"
   },
   "bin": {
-<<<<<<< HEAD
     "apexlint": "./dist/Main.js"
-=======
-    "apexlint": "./output/main.js"
->>>>>>> 2804ebf230282ac6f4c9d81e47213ad29bfc7da8
   },
   "preferGlobal": true
 }
