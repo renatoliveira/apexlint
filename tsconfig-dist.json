@@ -1,8 +1,8 @@
 {
     "compilerOptions": {
-        "sourceMap": true,
-        "outDir": "output",
-        "target": "es6",
+        "sourceMap": false,
+        "outDir": "dist",
+        "target": "es5",
         "removeComments": true,
         "rootDir": "./src"
     },

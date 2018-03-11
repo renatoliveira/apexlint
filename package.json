@@ -1,6 +1,6 @@
 {
   "name": "apexlint",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "An Apex linter written in TypeScript.",
   "main": "main.js",
   "author": "Renato Oliveira",
@@ -21,10 +21,11 @@
   },
   "scripts": {
     "test": "mocha -r ts-node/register tests/*.spec.ts",
-    "build": "tsc src/Main.ts --outDir output"
+    "build": "tsc -p tsconfig.json",
+    "build-dist": "tsc -p tsconfig-dist.json"
   },
-  "bin" : {
-    "apexlint": "./output/main.js"
+  "bin": {
+    "apexlint": "./dist/Main.js"
   },
   "preferGlobal": true
 }
