@@ -15,7 +15,7 @@ var pathString: fs.PathLike = process.argv[2]
 var errors = new Results()
 
 if (fs.lstatSync(pathString).isDirectory()) {
-    console.log("📂 Running on folder " + process.argv[2] + "...")
+    console.log("📂 - Running on folder " + process.argv[2] + "...")
     fs.readdir(pathString, (err, files) => {
         files.forEach(fileOnFolder => {
             if (fileOnFolder.match(/cls$/g)) {
@@ -25,7 +25,7 @@ if (fs.lstatSync(pathString).isDirectory()) {
         })
     })
 } else {
-    console.log("📄 Running on file " + process.argv[2] + "...")
+    console.log("📄 - Running on file " + process.argv[2] + "...")
     var apexfile = new ApexFile(pathString)
     errors.addErrors(apexfile.report())
 }
