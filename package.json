@@ -5,6 +5,10 @@
   "main": "main.js",
   "author": "Renato Oliveira",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/renatoliveira/apexlint.git"
+  },
   "private": false,
   "dependencies": {
     "@types/mocha": "^2.2.48",
