@@ -148,3 +148,17 @@ describe("SOQL queries.", () => {
         })
     })
 })
+
+describe("'TODOS:'", () => {
+    it("Should point to lines with 'TODO's.", () => {
+        let fileContext = new Context(new Array<string>(
+            'private class MyClass {',
+            '    // TODO: do something',
+            '    public Boolean something() {',
+            '        return true;',
+            '    }',
+            '}'
+        ))
+        expect(fileContext.getTodos()).to.equal(1)
+    })
+})

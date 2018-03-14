@@ -230,4 +230,8 @@ export class Context {
         let matches = fileAsString.match(/\[(\n?\s+?\t?)?SELECT/gi)
         this.soqlQueriesCount = matches != null ? matches.length : 0
     }
+
+    public getTodos (): number {
+        return 0
+    }
 }
