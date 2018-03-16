@@ -7,6 +7,7 @@ export class Rules {
         ctx.content.forEach((line, index) => {
             Rules.lineLimit(line, index, ctx)
             Rules.queryStructure(line, index, ctx)
+            Rules.lineWithTODO(line, index, ctx)
             Rules.queryWithoutCondition(line, index, ctx)
         })
     }
@@ -28,6 +29,13 @@ export class Rules {
             if (line.match(/from \w+\s*\]/i)) {
                 ctx.addError(new LinterError(index + 1, 'SOQL query without condition.'))
             }
+        }
+    }
+
+    public static lineWithTODO (line: string, index: number, ctx: Context): void {
+        if (line.match(/\/\/\s?TODO\s?:/g)) {
+            ctx.foundTodo();
+            ctx.addError(new LinterError(index + 1, 'TODO found, with missing feature.'))
         }
     }
 }

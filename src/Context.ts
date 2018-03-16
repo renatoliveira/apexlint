@@ -23,11 +23,13 @@ export class Context {
     private kind: ContextType
     private skipThisContext: boolean
     private soqlQueriesCount: number
+    private todos: number
 
     constructor (lines?: Array<string>) {
         this.content = new Array<string>()
         this.contexts = new Array<Context>()
         this.errors = new Array<LinterError>()
+        this.todos = 0
         if (lines) {
             this.content = lines
             this.validateContext()
@@ -231,7 +233,18 @@ export class Context {
         this.soqlQueriesCount = matches != null ? matches.length : 0
     }
 
+    /**
+     * When a TODO comment is found, increase the counter for this
+     * context.
+     */
+    public foundTodo (): void {
+        this.todos++
+    }
+
+    /**
+     * Return the number of TODOs found in this context.
+     */
     public getTodos (): number {
-        return 0
+        return this.todos
     }
 }
