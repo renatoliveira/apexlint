@@ -9,11 +9,13 @@ var Results = (function () {
     };
     Results.prototype.report = function () {
         if (this.errors.length == 0) {
-            console.log('✅ No errors found.');
+            console.log('✅ - No errors found.');
+            return 0;
         }
         this.errors.forEach(function (err) {
-            console.error('❌ ' + err);
+            console.error('❌ - ' + err);
         });
+        return -1;
     };
     return Results;
 }());

@@ -15,6 +15,7 @@ var Context = (function () {
         this.content = new Array();
         this.contexts = new Array();
         this.errors = new Array();
+        this.todos = 0;
         if (lines) {
             this.content = lines;
             this.validateContext();
@@ -148,6 +149,12 @@ var Context = (function () {
         var fileAsString = lines.join('');
         var matches = fileAsString.match(/\[(\n?\s+?\t?)?SELECT/gi);
         this.soqlQueriesCount = matches != null ? matches.length : 0;
+    };
+    Context.prototype.foundTodo = function () {
+        this.todos++;
+    };
+    Context.prototype.getTodos = function () {
+        return this.todos;
     };
     return Context;
 }());
