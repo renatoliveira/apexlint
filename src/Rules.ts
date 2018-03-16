@@ -6,7 +6,6 @@ export class Rules {
     public static run (ctx: Context): void {
         ctx.content.forEach((line, index) => {
             Rules.lineLimit(line, index, ctx)
-            Rules.assignmentOnSameLine(line, index, ctx)
             Rules.queryStructure(line, index, ctx)
             Rules.queryWithoutCondition(line, index, ctx)
         })
@@ -15,12 +14,6 @@ export class Rules {
     public static lineLimit (line: string, index: number, ctx: Context): void {
         if (line.length > 120) {
             ctx.addError(new LinterError(index + 1, 'Line exceeds the limit of 120 characters.'))
-        }
-    }
-
-    public static assignmentOnSameLine (line: string, index: number, ctx: Context): void {
-        if (line.match(/^(\t+|\s+)=/g) || line.match(/=(\s|\t)*$/g)) {
-            ctx.addError(new LinterError(index + 1, 'Assignments must be on the same line.'))
         }
     }
 
