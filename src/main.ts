@@ -30,4 +30,4 @@ if (fs.lstatSync(pathString).isDirectory()) {
     errors.addErrors(apexfile.report())
 }
 
-errors.report()
+process.exitCode = errors.report()

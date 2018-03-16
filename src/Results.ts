@@ -11,12 +11,14 @@ export class Results {
         this.errors = this.errors.concat(errors)
     }
 
-    public report (): void {
+    public report (): number {
         if (this.errors.length == 0) {
             console.log('✅ - No errors found.')
+            return 0
         }
         this.errors.forEach(err => {
             console.error('❌ - ' + err)
         })
+        return -1
     }
 }
