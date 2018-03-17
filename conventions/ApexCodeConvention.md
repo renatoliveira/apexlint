@@ -126,9 +126,9 @@ private class SomeClass {
 }
 ```
 
-##### 4.2.2.2 Instance Declarations
-
 The method line above has 95 characters (counting the 4 whitespaces before `public`), and it applies the first principle of breaking after a comma. Note that by using an extra indentation on the signature on the lower line we avoid the confusion of where the scope actually starts.
+
+##### 4.2.2.2 Instance Declarations
 
 ```java
 public with sharing class SomeClass {
@@ -457,7 +457,7 @@ Numerical constants (literals) should be coded directly only if they won't reall
 
 #### 10.3 Variable Assignments
 
-Do not use embedded assignments in an attempt to improve run-time performance. This is the jbo of the compiler. Example:
+Do not use embedded assignments in an attempt to improve run-time performance. This is the job of the compiler. Example:
 
 ```java
 d = (a + b - c) / z; // NOT OK
