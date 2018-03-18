@@ -60,7 +60,7 @@ export class Context {
                 ctx.startLine = counter + 1
                 newcontexts.push(ctx)
             }
-            if (line.match(/(.+)?}$(\n|\r|\S)?/g)) {
+            if (line.search('}') != -1) {
                 var ctx = newcontexts[newcontexts.length-1]
                 ctx.endline = counter + 1
                 this.contexts.push(ctx)

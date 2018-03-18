@@ -15,7 +15,29 @@ describe("Scope context detection.", () => {
         // the class context should contain the method context
         let fileContextChildren = fileContext.getChildContexts()
         expect(fileContextChildren.length).to.equal(1)
+        // TODO: Fix inner context type detection
         expect(fileContextChildren[0].getContext()).to.equal(ContextType.METHOD)
+    })
+})
+
+describe("Context sorting/nesting", () => {
+    it("Should correctly nest methods inside classes when analyzing contexts.", () => {
+        let classContext = new Context(new Array<string>(
+            'private class QueryClass {',
+            '    public List<Account> getAccounts() {',
+            '        return [SELECT Id FROM Account];',
+            '    }',
+            '}'
+        ))
+        expect(classContext.getChildContexts().length).to.equal(1)
+    }),
+    it("Should not set any child context.", () => {
+        let classContext = new Context(new Array<string>(
+            'private class QueryClass {',
+            '    // hello! ignore me',
+            '}'
+        ))
+        expect(classContext.getChildContexts().length).to.equal(0)
     })
 })
 
