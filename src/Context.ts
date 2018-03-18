@@ -63,7 +63,7 @@ export class Context {
                 ctx.startLine = counter + 1
                 newcontexts.push(ctx)
             } else if (line.search('}') != -1) {
-                var ctx = newcontexts[newcontexts.length-1]
+                var ctx = newcontexts[newcontexts.length - 1]
                 ctx.endline = counter + 1
                 if (ctx.startLine > this.startLine) {
                     let ctxLines = this.content.slice(ctx.startLine - 1, ctx.endline)
