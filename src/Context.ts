@@ -1,7 +1,7 @@
 import { LinterError } from "./LinterError"
 import { Rules } from "./Rules"
 
-enum ContextType {
+export enum ContextType {
     FUNCTION,
     METHOD,
     ACCESSOR,
@@ -70,8 +70,8 @@ export class Context {
             counter++
         }
         this.sortContexts()
-        this.getKind()
         this.setContextStartAndEnd()
+        this.getKind()
     }
 
     private setContextStartAndEnd (): void {
@@ -196,7 +196,7 @@ export class Context {
      * Tries to get the context type based on its first line.
      */
     public getKind (): void {
-        var startLine: string = this.content[this.startLine]
+        var startLine: string = this.content[this.startLine-1]
         if (startLine != undefined) {
             if (startLine.match(/class/g)) {
                 this.kind = ContextType.CLASS
@@ -246,5 +246,9 @@ export class Context {
      */
     public getTodos (): number {
         return this.todos
+    }
+
+    public getContext(): ContextType {
+        return this.kind
     }
 }
