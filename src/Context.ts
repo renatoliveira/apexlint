@@ -71,10 +71,10 @@ export class Context {
         }
         this.sortContexts()
         this.getKind()
-        this.setLines()
+        this.setContextStartAndEnd()
     }
 
-    private setLines (): void {
+    private setContextStartAndEnd (): void {
         if (this.startLine == undefined && this.endline == undefined) {
             this.startLine = 1
             this.endline = this.content.length
