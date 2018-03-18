@@ -14,12 +14,11 @@ export enum ContextType {
  * Valid contexts are represented on the enumerator above.
  */
 export class Context {
-    public content: Array<string>
-    public contexts: Array<Context>
-    public errors: Array<LinterError>
-    public startLine: number
-    public endline: number
-    
+    private content: Array<string>
+    private contexts: Array<Context>
+    private errors: Array<LinterError>
+    private startLine: number
+    private endline: number
     private kind: ContextType
     private skipThisContext: boolean
     private soqlQueriesCount: number
@@ -248,6 +247,9 @@ export class Context {
         return this.todos
     }
 
+    /**
+     * Returns this context type
+     */
     public getContext(): ContextType {
         return this.kind
     }
