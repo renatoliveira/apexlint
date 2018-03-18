@@ -2,11 +2,8 @@ import { LinterError } from "./LinterError"
 import { Rules } from "./Rules"
 
 export enum ContextType {
-    FUNCTION,
-    METHOD,
-    ACCESSOR,
     CLASS,
-    ITERATOR
+    METHOD
 }
 
 /**
