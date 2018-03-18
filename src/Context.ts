@@ -58,11 +58,11 @@ export class Context {
             } else if (line == '' || this.isInlineContext(line)) {
                 counter++
                 continue
-            } else if (line.search('{') != -1) {
+            } else if (line.search('{') != -1 && counter !== this.startLine - 1) {
                 var ctx = new Context()
                 ctx.startLine = counter + 1
                 newcontexts.push(ctx)
-            } else if (line.search('}') != -1) {
+            } else if (line.search('}') != -1 && newcontexts[newcontexts.length - 1] !== undefined) {
                 var ctx = newcontexts[newcontexts.length - 1]
                 ctx.endline = counter + 1
                 if (ctx.startLine > this.startLine) {
