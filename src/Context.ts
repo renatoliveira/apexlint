@@ -48,6 +48,9 @@ export class Context {
         var newcontexts = new Array<Context>()
         var counter: number = 0
         while (true) {
+            if (!this.hasInnerContexts()) {
+                break
+            }
             var line = this.content[counter]
             if (!line)
                 break
@@ -71,6 +74,10 @@ export class Context {
         this.sortContexts()
         this.setContextStartAndEnd()
         this.getKind()
+    }
+
+    private hasInnerContexts (): boolean {
+        return this.content.join('').match(/\{/g).length > 1
     }
 
     private setContextStartAndEnd (): void {
