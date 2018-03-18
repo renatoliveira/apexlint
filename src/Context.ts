@@ -27,14 +27,21 @@ export class Context {
         this.errors = new Array<LinterError>()
         this.todos = 0
         if (lines) {
-            this.content = lines
-            this.validateContext()
-            if (!this.skipThisContext) {
-                this.getInnerContexts()
-            }
-            this.findQueries(this.content)
-            this.runRules();
+            this.startLine = 1
+            this.endline = lines.length
+            this.init(lines)
         }
+    }
+
+    public init (lines: Array<string>) {
+        this.content = lines
+        this.validateContext()
+        if (!this.skipThisContext) {
+            this.getInnerContexts()
+            this.getKind()
+        }
+        this.findQueries(this.content)
+        this.runRules();
     }
 
     /** 
@@ -45,11 +52,8 @@ export class Context {
         var newcontexts = new Array<Context>()
         var counter: number = 0
         while (true) {
-            if (!this.hasInnerContexts()) {
-                break
-            }
             var line = this.content[counter]
-            if (!line)
+            if (!line || !this.hasInnerContexts())
                 break
             if (line == '' || this.isInlineContext(line)) {
                 counter++
@@ -63,6 +67,10 @@ export class Context {
             if (line.search('}') != -1) {
                 var ctx = newcontexts[newcontexts.length-1]
                 ctx.endline = counter + 1
+                if (ctx.startLine > this.startLine) {
+                    let ctxLines = this.content.slice(ctx.startLine - 1, ctx.endline)
+                    ctx.init(ctxLines)
+                }
                 this.contexts.push(ctx)
                 newcontexts.pop()
             }
@@ -70,7 +78,6 @@ export class Context {
         }
         this.sortContexts()
         this.setContextStartAndEnd()
-        this.getKind()
     }
 
     private hasInnerContexts (): boolean {
@@ -199,10 +206,12 @@ export class Context {
      * Tries to get the context type based on its first line.
      */
     public getKind (): void {
-        var startLine: string = this.content[this.startLine-1]
+        var startLine: string = this.content[0]
         if (startLine != undefined) {
-            if (startLine.match(/class/g)) {
+            if (startLine.toLowerCase().search('class') != -1) {
                 this.kind = ContextType.CLASS
+            } else if (startLine.toLowerCase().search('class') == -1 && startLine.toLowerCase().match(/(public|private|global)\s?(override|static)?/g) != null) {
+                this.kind = ContextType.METHOD
             }
         }
     }
