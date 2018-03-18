@@ -12,6 +12,9 @@ describe("Scope context detection.", () => {
             '}'
         ))
         expect(fileContext.getContext()).to.equal(ContextType.CLASS)
+        // the class context should contain the method context
+        let fileContextChildren = fileContext.getChildContexts()
+        expect(fileContextChildren.length).to.equal(1)
     })
 })
 

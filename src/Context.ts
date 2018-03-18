@@ -253,4 +253,11 @@ export class Context {
     public getContext(): ContextType {
         return this.kind
     }
+
+    /**
+     * Return the child contexts
+     */
+    public getChildContexts (): Array<Context> {
+        return this.contexts
+    }
 }
