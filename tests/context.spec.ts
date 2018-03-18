@@ -2,7 +2,7 @@ import { expect } from 'chai'
 import { Context } from "../src/Context"
 import { ContextType } from "../src/Context"
 
-describe.only("Scope context detection.", () => {
+describe("Scope context detection.", () => {
     it("Should detect the class context.", () => {
         let testContext = new Context(new Array<string>(
             'private class MyClass {',
@@ -19,7 +19,7 @@ describe.only("Scope context detection.", () => {
         ))
         expect(testContext.getContext()).to.equal(ContextType.METHOD)
     }),
-    it.only("Should detect the class and method contexts.", () => {
+    it("Should detect the class and method contexts.", () => {
         let fileContext = new Context(new Array<string>(
             'private class MyClass {',
             '    public void doSomething() {',
@@ -31,7 +31,7 @@ describe.only("Scope context detection.", () => {
         // the class context should contain the method context
         let fileContextChildren = fileContext.getChildContexts()
         expect(fileContextChildren.length).to.equal(1)
-        console.log(fileContextChildren)
+        // FIXME
         expect(fileContextChildren[0].getContext()).to.equal(ContextType.METHOD)
     })
 })
