@@ -4,12 +4,9 @@ var LinterError_1 = require("./LinterError");
 var Rules_1 = require("./Rules");
 var ContextType;
 (function (ContextType) {
-    ContextType[ContextType["FUNCTION"] = 0] = "FUNCTION";
+    ContextType[ContextType["CLASS"] = 0] = "CLASS";
     ContextType[ContextType["METHOD"] = 1] = "METHOD";
-    ContextType[ContextType["ACCESSOR"] = 2] = "ACCESSOR";
-    ContextType[ContextType["CLASS"] = 3] = "CLASS";
-    ContextType[ContextType["ITERATOR"] = 4] = "ITERATOR";
-})(ContextType || (ContextType = {}));
+})(ContextType = exports.ContextType || (exports.ContextType = {}));
 var Context = (function () {
     function Context(lines) {
         this.content = new Array();
@@ -17,44 +14,57 @@ var Context = (function () {
         this.errors = new Array();
         this.todos = 0;
         if (lines) {
-            this.content = lines;
-            this.validateContext();
-            if (!this.skipThisContext) {
-                this.getInnerContexts();
-            }
-            this.findQueries(this.content);
-            this.runRules();
+            this.startLine = 1;
+            this.endline = lines.length;
+            this.init(lines);
         }
     }
+    Context.prototype.init = function (lines) {
+        this.content = lines;
+        this.validateContext();
+        if (!this.skipThisContext) {
+            this.getInnerContexts();
+            this.getKind();
+        }
+        this.findQueries(this.content);
+        this.runRules();
+    };
     Context.prototype.getInnerContexts = function () {
         var newcontexts = new Array();
         var counter = 0;
         while (true) {
             var line = this.content[counter];
-            if (!line)
+            if (!line || !this.hasInnerContexts()) {
                 break;
-            if (line == '' || this.isInlineContext(line)) {
+            }
+            else if (line == '' || this.isInlineContext(line)) {
                 counter++;
                 continue;
             }
-            if (line.search('{') != -1) {
+            else if (line.search('{') != -1 && counter !== this.startLine - 1) {
                 var ctx = new Context();
                 ctx.startLine = counter + 1;
                 newcontexts.push(ctx);
             }
-            if (line.match(/(.+)?}$(\n|\r|\S)?/g)) {
+            else if (line.search('}') != -1 && newcontexts[newcontexts.length - 1] !== undefined) {
                 var ctx = newcontexts[newcontexts.length - 1];
                 ctx.endline = counter + 1;
+                if (ctx.startLine > this.startLine) {
+                    var ctxLines = this.content.slice(ctx.startLine - 1, ctx.endline);
+                    ctx.init(ctxLines);
+                }
                 this.contexts.push(ctx);
                 newcontexts.pop();
             }
             counter++;
         }
         this.sortContexts();
-        this.getKind();
-        this.setLines();
+        this.setContextStartAndEnd();
     };
-    Context.prototype.setLines = function () {
+    Context.prototype.hasInnerContexts = function () {
+        return this.content.join('').match(/\{/g).length > 1;
+    };
+    Context.prototype.setContextStartAndEnd = function () {
         if (this.startLine == undefined && this.endline == undefined) {
             this.startLine = 1;
             this.endline = this.content.length;
@@ -129,10 +139,13 @@ var Context = (function () {
         return this.errors.concat(errors);
     };
     Context.prototype.getKind = function () {
-        var startLine = this.content[this.startLine];
+        var startLine = this.content[0];
         if (startLine != undefined) {
-            if (startLine.match(/class/g)) {
+            if (startLine.toLowerCase().search('class') != -1) {
                 this.kind = ContextType.CLASS;
+            }
+            else if (startLine.toLowerCase().search('class') == -1 && startLine.toLowerCase().match(/(public|private|global)\s?(override|static)?/g) != null) {
+                this.kind = ContextType.METHOD;
             }
         }
     };
@@ -155,6 +168,15 @@ var Context = (function () {
     };
     Context.prototype.getTodos = function () {
         return this.todos;
+    };
+    Context.prototype.getContext = function () {
+        return this.kind;
+    };
+    Context.prototype.getContent = function () {
+        return this.content;
+    };
+    Context.prototype.getChildContexts = function () {
+        return this.contexts;
     };
     return Context;
 }());

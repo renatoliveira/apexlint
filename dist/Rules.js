@@ -5,7 +5,7 @@ var Rules = (function () {
     function Rules() {
     }
     Rules.run = function (ctx) {
-        ctx.content.forEach(function (line, index) {
+        ctx.getContent().forEach(function (line, index) {
             Rules.lineLimit(line, index, ctx);
             Rules.queryStructure(line, index, ctx);
             Rules.lineWithTODO(line, index, ctx);

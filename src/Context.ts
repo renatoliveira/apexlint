@@ -261,8 +261,12 @@ export class Context {
     /**
      * Returns this context type
      */
-    public getContext(): ContextType {
+    public getContext (): ContextType {
         return this.kind
+    }
+
+    public getContent (): Array<string> {
+        return this.content
     }
 
     /**

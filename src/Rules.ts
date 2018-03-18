@@ -4,7 +4,7 @@ import { LinterError } from "./LinterError";
 export class Rules {
 
     public static run (ctx: Context): void {
-        ctx.content.forEach((line, index) => {
+        ctx.getContent().forEach((line, index) => {
             Rules.lineLimit(line, index, ctx)
             Rules.queryStructure(line, index, ctx)
             Rules.lineWithTODO(line, index, ctx)
