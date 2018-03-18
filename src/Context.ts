@@ -53,18 +53,16 @@ export class Context {
         var counter: number = 0
         while (true) {
             var line = this.content[counter]
-            if (!line || !this.hasInnerContexts())
+            if (!line || !this.hasInnerContexts()) {
                 break
-            if (line == '' || this.isInlineContext(line)) {
+            } else if (line == '' || this.isInlineContext(line)) {
                 counter++
                 continue
-            }
-            if (line.search('{') != -1) {
+            } else if (line.search('{') != -1) {
                 var ctx = new Context()
                 ctx.startLine = counter + 1
                 newcontexts.push(ctx)
-            }
-            if (line.search('}') != -1) {
+            } else if (line.search('}') != -1) {
                 var ctx = newcontexts[newcontexts.length-1]
                 ctx.endline = counter + 1
                 if (ctx.startLine > this.startLine) {
