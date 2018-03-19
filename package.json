@@ -22,7 +22,7 @@
   "scripts": {
     "test": "mocha -r ts-node/register tests/*.spec.ts",
     "build": "tsc -p tsconfig.json",
-    "build-dist": "tsc -p tsconfig-dist.json"
+    "build-dist": "rm -rf dist/* && tsc -p tsconfig-dist.json"
   },
   "bin": {
     "apexlint": "./dist/Main.js"
