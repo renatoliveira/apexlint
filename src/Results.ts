@@ -1,7 +1,7 @@
 import { LinterError } from "./LinterError"
 
 export class Results {
-    public errors: Array<LinterError>
+    private errors: Array<LinterError>
 
     constructor () {
         this.errors = new Array<LinterError>()
