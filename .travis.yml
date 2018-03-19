@@ -1,0 +1,12 @@
+language: node_js
+
+node_js:
+- '9.8.0'
+
+before_install:
+- npm install -g typescript
+- npm install -g yarn
+- yarn install
+
+script:
+- yarn test
