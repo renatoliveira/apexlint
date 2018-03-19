@@ -1,4 +1,7 @@
+[![npm version](https://badge.fury.io/js/apexlint.svg)](https://badge.fury.io/js/apexlint)
+
 # apexlint
+
 An Apex linter written in TypeScript (work in progress)
 
 # About this repository
