@@ -5,11 +5,14 @@ import { LinterError } from "./LinterError"
 
 export class ApexFile {
 
-    public filePath: fs.PathLike
+    private filePath: fs.PathLike
+    private fileName: string
     private mainContext: Context
     private errors: Array<LinterError>
 
-    constructor (filePath: fs.PathLike) {
+    constructor (fileName: string, filePath: fs.PathLike) {
+        this.errors = new Array<LinterError>()
+        this.fileName = fileName
         this.filePath = filePath
         this.analyze(this.loadFile())
     }
@@ -40,13 +43,6 @@ export class ApexFile {
     }
 
     /**
-     * Return the errors found on the screen.
-     */
-    public report (): Array<LinterError> {
-        return this.mainContext.getErrors()
-    }
-
-    /**
      * Replace the strings inside the file, for example the strings
      * inside System.debug() statements.
      * 
@@ -54,5 +50,31 @@ export class ApexFile {
      */
     private replaceStrings (fileAsString: string): string {
         return fileAsString.replace(/'.{1,}'/g, '')
+    }
+
+    /**
+     * Returns the file name.
+     */
+    public getName (): string {
+        return this.fileName
+    }
+
+    /**
+     * Prints the errors on
+     */
+    public printReport (): void {
+        this.errors = this.mainContext.getErrors()
+        if (this.errors.length > 0 && process.exitCode != -1) {
+            process.exitCode = -1
+        }
+        if (this.errors.length == 0) {
+            console.log(this.fileName + ' ✅  No errors found.')
+        } else {
+            console.log('\n' + this.fileName + ':\n')
+            this.errors.forEach(error => {
+                console.log('\t❌  ' + error)
+            });
+            console.log('\n')
+        }
     }
 }

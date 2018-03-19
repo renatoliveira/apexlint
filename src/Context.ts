@@ -181,9 +181,6 @@ export class Context {
      * @param err new error to the error array
      */
     public addError (err: LinterError): void {
-        if (this.errors == undefined) {
-            this.errors = new Array<LinterError>()
-        }
         this.errors.push(err)
     }
 
@@ -265,6 +262,9 @@ export class Context {
         return this.kind
     }
 
+    /**
+     * Return the file content.
+     */
     public getContent (): Array<string> {
         return this.content
     }
