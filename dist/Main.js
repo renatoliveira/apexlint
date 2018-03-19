@@ -3,28 +3,25 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var fs = require("fs");
 var ApexFile_1 = require("./ApexFile");
-var Results_1 = require("./Results");
-if (process.argv.length < 3) {
-    console.error("❗️ Should specify which file or folder to run.");
-    process.exit();
-}
 var mode = null;
 var pathString = process.argv[2];
-var errors = new Results_1.Results();
+var processedFiles = new Array();
+if (process.argv.length < 3) {
+    console.error("❗️  Should specify which file or folder to run.");
+    process.exit();
+}
 if (fs.lstatSync(pathString).isDirectory()) {
-    console.log("📂 - Running on folder " + process.argv[2] + "...");
-    fs.readdir(pathString, function (err, files) {
-        files.forEach(function (fileOnFolder) {
-            if (fileOnFolder.match(/cls$/g)) {
-                var apexfile = new ApexFile_1.ApexFile(pathString + '/' + fileOnFolder);
-                errors.addErrors(apexfile.report());
-            }
-        });
+    console.log("📂  - Running on folder " + process.argv[2] + "...");
+    fs.readdirSync(pathString).forEach(function (file) {
+        var classFile = new ApexFile_1.ApexFile(file, pathString + '/' + file);
+        processedFiles.push(classFile);
     });
 }
 else {
-    console.log("📄 - Running on file " + process.argv[2] + "...");
-    var apexfile = new ApexFile_1.ApexFile(pathString);
-    errors.addErrors(apexfile.report());
+    console.log("📄  - Running on file " + process.argv[2] + "...");
+    var apexfile = new ApexFile_1.ApexFile(process.argv[2], pathString);
+    processedFiles.push(apexfile);
 }
-process.exitCode = errors.report();
+processedFiles.forEach(function (file) {
+    file.printReport();
+});

@@ -124,9 +124,6 @@ var Context = (function () {
         }
     };
     Context.prototype.addError = function (err) {
-        if (this.errors == undefined) {
-            this.errors = new Array();
-        }
         this.errors.push(err);
     };
     Context.prototype.getErrors = function () {
