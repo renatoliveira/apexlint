@@ -1,5 +1,6 @@
 {
     "compilerOptions": {
+        "newLine": "lf",
         "sourceMap": false,
         "outDir": "dist",
         "target": "es5",
