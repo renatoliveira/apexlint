@@ -1,6 +1,6 @@
-[![npm version](https://badge.fury.io/js/apexlint.svg)](https://badge.fury.io/js/apexlint)
-
 # apexlint
+
+[![npm version](https://badge.fury.io/js/apexlint.svg)](https://badge.fury.io/js/apexlint) [![travis-ci](https://travis-ci.org/renatoliveira/apexlint.svg?branch=master)](https://travis-ci.org/renatoliveira/apexlint)
 
 An Apex linter written in TypeScript (work in progress)
 
