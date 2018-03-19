@@ -4,7 +4,7 @@
 
 An Apex linter written in TypeScript (work in progress)
 
-# About this repository
+## About this repository
 
 As the title says, this is a work in progress linter for the Apex language.
 
@@ -12,7 +12,7 @@ I'm building this to assist me with writing better code for the Salesforce ☁ p
 
 Other reasons to create this thing is to learn how to write a linter, because there are no How To's online (at least not as of 4 Mar 2018).
 
-# Some things that are nice and would be nice to have.
+## Some things that are nice and would be nice to have
 
 * [ ] Be able to run the linter from the command line (should be a priority when getting more items done in this list)
 * [x] Make the linter read and sort the code by contexts.
@@ -23,7 +23,7 @@ Other reasons to create this thing is to learn how to write a linter, because th
 * [ ] Basic detection of SOQL statements inside loop structures.
 * and more...
 
-# Installation
+## Installation
 
 This tool can be installed with npm or yarn, and you should link it for it to be available globally.
 
@@ -35,7 +35,7 @@ Or this with yarn:
 
 ```yarn global add apexlint```
 
-# Uninstall
+## Uninstall
 
 Using npm, you can uninstall it by issuing the same install command, but r
 replacing `install` with `uninstall`:
@@ -46,7 +46,7 @@ or, with yarn:
 
 ```yarn global remove apexlint```
 
-# License
+## License
 
 Copyright 2018 Renato Oliveira
 
