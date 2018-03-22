@@ -10,6 +10,7 @@ var Rules = (function () {
             Rules.queryStructure(line, index, ctx);
             Rules.lineWithTODO(line, index, ctx);
             Rules.queryWithoutCondition(line, index, ctx);
+            Rules.whiteSpace(line, index, ctx);
         });
     };
     Rules.lineLimit = function (line, index, ctx) {
@@ -33,6 +34,20 @@ var Rules = (function () {
         if (line.match(/\/\/\s?TODO\s?:/g)) {
             ctx.foundTodo();
             ctx.addError(new LinterError_1.LinterError(index + 1, 'TODO found, with missing feature.'));
+        }
+    };
+    Rules.whiteSpace = function (line, index, ctx) {
+        if (line.search('if\\(') != -1) {
+            ctx.addError(new LinterError_1.LinterError(index + 1, 'Missing space between "if" and "(".'));
+        }
+        if (line.search('for\\(') != -1) {
+            ctx.addError(new LinterError_1.LinterError(index + 1, 'Missing space between "for" and "(".'));
+        }
+        if (line.search('else\\{') != -1) {
+            ctx.addError(new LinterError_1.LinterError(index + 1, 'Missing space between "else" and "{".'));
+        }
+        if (line.search('\\}else') != -1) {
+            ctx.addError(new LinterError_1.LinterError(index + 1, 'Missing space between "}" and "else".'));
         }
     };
     return Rules;
