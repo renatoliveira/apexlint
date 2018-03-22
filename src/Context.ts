@@ -166,10 +166,11 @@ export class Context {
      */
     private validateContext (): void {
         var ctx = this.content.join('')
-        var leftBrackets = ctx.match(/{/g).length
-        var rightBrackets = ctx.match(/}/g).length
+        var leftBrackets = ctx.match(/{/g)
+        var rightBrackets = ctx.match(/}/g)
 
-        if (leftBrackets != rightBrackets) {
+        if ((leftBrackets !== null && rightBrackets !== null) &&
+            (leftBrackets.length != rightBrackets.length)) {
             this.errors.push(new LinterError(-1, 'Brackets ("{" and "}") count don\'t match.'))
             this.skipThisContext = true
         }
