@@ -62,7 +62,10 @@ var Context = (function () {
         this.setContextStartAndEnd();
     };
     Context.prototype.hasInnerContexts = function () {
-        return this.content.join('').match(/\{/g).length > 1;
+        var bracketCount = this.content.join('').match(/\{/g);
+        return bracketCount !== null
+            ? bracketCount.length > 1
+            : false;
     };
     Context.prototype.setContextStartAndEnd = function () {
         if (this.startLine == undefined && this.endline == undefined) {
@@ -116,10 +119,16 @@ var Context = (function () {
     };
     Context.prototype.validateContext = function () {
         var ctx = this.content.join('');
-        var leftBrackets = ctx.match(/{/g).length;
-        var rightBrackets = ctx.match(/}/g).length;
-        if (leftBrackets != rightBrackets) {
-            this.errors.push(new LinterError_1.LinterError(-1, 'Brackets ("{" and "}") count don\'t match.'));
+        var leftBrackets = ctx.match(/{/g);
+        var rightBrackets = ctx.match(/}/g);
+        if (leftBrackets !== null && rightBrackets !== null) {
+            if (leftBrackets.length != rightBrackets.length) {
+                this.errors.push(new LinterError_1.LinterError(-1, 'Brackets ("{" and "}") count don\'t match.'));
+                this.skipThisContext = true;
+            }
+        }
+        else if (leftBrackets === null || rightBrackets === null) {
+            this.errors.push(new LinterError_1.LinterError(-1, 'Class is invalid.'));
             this.skipThisContext = true;
         }
     };
@@ -128,6 +137,9 @@ var Context = (function () {
     };
     Context.prototype.getErrors = function () {
         var errors = Array();
+        if (this.errors === undefined) {
+            this.errors = new Array();
+        }
         if (this.contexts) {
             this.contexts.forEach(function (ctx) {
                 errors.concat(ctx.getErrors());
