@@ -169,9 +169,12 @@ export class Context {
         var leftBrackets = ctx.match(/{/g)
         var rightBrackets = ctx.match(/}/g)
 
-        if ((leftBrackets !== null && rightBrackets !== null) &&
-            (leftBrackets.length != rightBrackets.length)) {
-            this.errors.push(new LinterError(-1, 'Brackets ("{" and "}") count don\'t match.'))
+        if (leftBrackets !== null && rightBrackets !== null) {
+            if (leftBrackets.length != rightBrackets.length) {
+                this.errors.push(new LinterError(-1, 'Brackets ("{" and "}") count don\'t match.'))
+            } else if (leftBrackets.length === 0 || rightBrackets.length === 0) {
+                this.errors.push(new LinterError(-1, 'Class is invalid.'))
+            }
             this.skipThisContext = true
         }
     }
