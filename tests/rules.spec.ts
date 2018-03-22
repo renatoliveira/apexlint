@@ -3,6 +3,20 @@ import { Rules } from "../src/Rules"
 import { Context } from "../src/Context"
 import { ContextType } from "../src/Context"
 
+
+describe("File validation", () => {
+    it("Should raise errors when bracket count is incorrect.", () => {
+        let fileString = 'private InvalidClass () {'
+        let context = new Context(new Array<string>(fileString))
+        expect(context.getErrors().length).to.equal(1)
+    }),
+    it("Should raise an error when there are no brackets in the class file.", () => {
+        let fileString = 'private InvalidClass ()'
+        let context = new Context(new Array<string>(fileString))
+        expect(context.getErrors().length).to.equal(1)
+    })
+})
+
 describe("Context rules", () => {
     describe("Comments", () => {
         it("Should ignore lines starting with '//'.", () => {

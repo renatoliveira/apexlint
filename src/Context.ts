@@ -79,7 +79,10 @@ export class Context {
     }
 
     private hasInnerContexts (): boolean {
-        return this.content.join('').match(/\{/g).length > 1
+        let bracketCount = this.content.join('').match(/\{/g)
+        return bracketCount !== null
+            ? bracketCount.length > 1
+            : false
     }
 
     private setContextStartAndEnd (): void {
@@ -172,9 +175,10 @@ export class Context {
         if (leftBrackets !== null && rightBrackets !== null) {
             if (leftBrackets.length != rightBrackets.length) {
                 this.errors.push(new LinterError(-1, 'Brackets ("{" and "}") count don\'t match.'))
-            } else if (leftBrackets.length === 0 || rightBrackets.length === 0) {
-                this.errors.push(new LinterError(-1, 'Class is invalid.'))
+                this.skipThisContext = true
             }
+        } else if (leftBrackets === null || rightBrackets === null) {
+            this.errors.push(new LinterError(-1, 'Class is invalid.'))
             this.skipThisContext = true
         }
     }
@@ -193,6 +197,9 @@ export class Context {
      */
     public getErrors (): Array<LinterError> {
         var errors = Array<LinterError>()
+        if (this.errors === undefined) {
+            this.errors = new Array<LinterError>()
+        }
         if (this.contexts) {
             this.contexts.forEach(ctx => {
                 errors.concat(ctx.getErrors())
