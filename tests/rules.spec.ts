@@ -87,3 +87,92 @@ describe("'TODOS:'", () => {
         expect(fileContext.getTodos()).to.equal(1)
     })
 })
+
+describe("Whitespace", () => {
+    describe("Should warn about missing whitespaces.", () => {
+        it("Should't warn when there are no errors.", () => {
+            let fileContext = new Context(new Array<string>(
+                'private class MyClass {',
+                '    public String returnString () {',
+                '        if (condition) {',
+                '            something;',
+                '        }',
+                '    }',
+                '}'
+            ))
+            expect(fileContext.getErrors().length).to.equal(0)
+        }),
+        it("Should warn on 'if's.", () => {
+            let fileContext = new Context(new Array<string>(
+                'private class MyClass {',
+                '    public String returnString () {',
+                '        if(condition) {',
+                '            something;',
+                '        }',
+                '    }',
+                '}'
+            ))
+            expect(fileContext.getErrors().length).to.equal(1)
+            expect(fileContext.getErrors()[0].getLine()).to.equal(3)
+        }),
+        it("Should warn on 'for's.", () => {
+            let fileContext = new Context(new Array<string>(
+                'private class MyClass {',
+                '    public String returnString () {',
+                '        for(condition) {',
+                '            something;',
+                '        }',
+                '    }',
+                '}'
+            ))
+            expect(fileContext.getErrors().length).to.equal(1)
+            expect(fileContext.getErrors()[0].getLine()).to.equal(3)
+        }),
+        it("Should warn on 'else's.", () => {
+            let fileContext = new Context(new Array<string>(
+                'private class MyClass {',
+                '    public String returnString () {',
+                '        if (condition) {',
+                '            something;',
+                '        }else {',
+                '            something;',
+                '        }',
+                '    }',
+                '}'
+            ))
+            expect(fileContext.getErrors().length).to.equal(1)
+            expect(fileContext.getErrors()[0].getLine()).to.equal(5)
+        }),
+        it("Should warn on 'else's.", () => {
+            let fileContext = new Context(new Array<string>(
+                'private class MyClass {',
+                '    public String returnString () {',
+                '        if (condition) {',
+                '            something;',
+                '        } else{',
+                '            something;',
+                '        }',
+                '    }',
+                '}'
+            ))
+            expect(fileContext.getErrors().length).to.equal(1)
+            expect(fileContext.getErrors()[0].getLine()).to.equal(5)
+        }),
+        it("Should warn on 'else's.", () => {
+            let fileContext = new Context(new Array<string>(
+                'private class MyClass {',
+                '    public String returnString () {',
+                '        if (condition) {',
+                '            something;',
+                '        }else{',
+                '            something;',
+                '        }',
+                '    }',
+                '}'
+            ))
+            expect(fileContext.getErrors().length).to.equal(2)
+            expect(fileContext.getErrors()[0].getLine()).to.equal(5)
+            expect(fileContext.getErrors()[1].getLine()).to.equal(5)
+        })
+    })
+})

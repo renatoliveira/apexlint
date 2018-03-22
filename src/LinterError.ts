@@ -14,4 +14,8 @@ export class LinterError {
     public toString (): string {
         return `${this.lineError}: ${this.message}`
     }
+
+    public getLine (): number {
+        return this.lineError
+    }
 }

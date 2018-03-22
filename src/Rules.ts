@@ -9,6 +9,7 @@ export class Rules {
             Rules.queryStructure(line, index, ctx)
             Rules.lineWithTODO(line, index, ctx)
             Rules.queryWithoutCondition(line, index, ctx)
+            Rules.whiteSpace(line, index, ctx)
         })
     }
 
@@ -36,6 +37,21 @@ export class Rules {
         if (line.match(/\/\/\s?TODO\s?:/g)) {
             ctx.foundTodo();
             ctx.addError(new LinterError(index + 1, 'TODO found, with missing feature.'))
+        }
+    }
+
+    public static whiteSpace (line: string, index: number, ctx: Context): void {
+        if (line.search('if\\(') != -1) {
+            ctx.addError(new LinterError(index + 1, 'Missing space between "if" and "(".'))
+        }
+        if (line.search('for\\(') != -1) {
+            ctx.addError(new LinterError(index + 1, 'Missing space between "for" and "(".'))
+        }
+        if (line.search('else\\{') != -1) {
+            ctx.addError(new LinterError(index + 1, 'Missing space between "else" and "{".'))
+        }
+        if (line.search('\\}else') != -1) {
+            ctx.addError(new LinterError(index +1, 'Missing space between "}" and "else".'))
         }
     }
 }
