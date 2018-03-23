@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var fs = require("fs");
 var Context_1 = require("./Context");
+var chalk_1 = require("chalk");
 var ApexFile = (function () {
     function ApexFile(fileName, filePath) {
         this.errors = new Array();
@@ -37,12 +38,12 @@ var ApexFile = (function () {
             process.exitCode = -1;
         }
         if (this.errors.length == 0) {
-            console.log(this.fileName + ' ✅  No errors found.');
+            console.log(chalk_1.default.green('✓ ') + this.fileName + ' - No errors found.');
         }
         else {
-            console.log('\n' + this.fileName + ':\n');
+            console.log('\n' + chalk_1.default.red('✗ ') + this.fileName + ':\n');
             this.errors.forEach(function (error) {
-                console.log('\t❌  ' + error);
+                console.log('\t' + error);
             });
             console.log('\n');
         }
