@@ -10,11 +10,13 @@ export class ApexFile {
     private mainContext: Context
     private errors: Array<LinterError>
 
-    constructor (fileName: string, filePath: fs.PathLike) {
+    constructor (fileName?: string, filePath?: fs.PathLike) {
         this.errors = new Array<LinterError>()
-        this.fileName = fileName
-        this.filePath = filePath
-        this.analyze(this.loadFile())
+        if (fileName && filePath) {
+            this.fileName = fileName
+            this.filePath = filePath
+            this.analyze(this.loadFile())
+        }
     }
 
     /** 
@@ -37,9 +39,10 @@ export class ApexFile {
      * 
      * @param fileAsString file as string
      */
-    private analyze(fileAsString: string): void {
+    public analyze(fileAsString: string): void {
         fileAsString = this.replaceStrings(fileAsString)
         this.mainContext = new Context(fileAsString.split('\n'))
+        this.errors = this.mainContext.getErrors()
     }
 
     /**
@@ -63,7 +66,6 @@ export class ApexFile {
      * Prints the errors on
      */
     public printReport (): void {
-        this.errors = this.mainContext.getErrors()
         if (this.errors.length > 0 && process.exitCode != -1) {
             process.exitCode = -1
         }
@@ -76,5 +78,12 @@ export class ApexFile {
             });
             console.log('\n')
         }
+    }
+
+    /**
+     * Get error count.
+     */
+    public getErrorCount (): number {
+        return this.errors.length
     }
 }

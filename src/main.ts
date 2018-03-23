@@ -6,6 +6,7 @@ import { LinterError } from "./LinterError";
 var mode: String = null
 var pathString: fs.PathLike = process.argv[2]
 var processedFiles: Array<ApexFile> = new Array<ApexFile>()
+var filesWithErrorsCount: number = 0
 
 if (process.argv.length < 3) {
     console.error("❗️  Should specify which file or folder to run.")
@@ -25,5 +26,14 @@ if (fs.lstatSync(pathString).isDirectory()) {
     processedFiles.push(apexfile)
 }
 processedFiles.forEach(file => {
+    if (file.getErrorCount() > 0) {
+        filesWithErrorsCount++
+    }
     file.printReport()
 })
+
+if (processedFiles.length > 1) {
+    let passingFiles: number = processedFiles.length - filesWithErrorsCount
+    let passingPercentage: number = (filesWithErrorsCount * 100) / processedFiles.length
+    console.log(`\n\t${processedFiles.length - filesWithErrorsCount}/${processedFiles.length} (${passingPercentage}%) passing\n`)
+}
