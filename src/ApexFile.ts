@@ -2,6 +2,7 @@ import * as fs from "fs"
 import { start } from "repl";
 import { Context } from "./Context"
 import { LinterError } from "./LinterError"
+import chalk, { Chalk } from "chalk"
 
 export class ApexFile {
 
@@ -70,11 +71,11 @@ export class ApexFile {
             process.exitCode = -1
         }
         if (this.errors.length == 0) {
-            console.log(this.fileName + ' ✅  No errors found.')
+            console.log(chalk.green('✓ ') + this.fileName + ' - No errors found.')
         } else {
-            console.log('\n' + this.fileName + ':\n')
+            console.log('\n' + chalk.red('✗ ') + this.fileName + ':\n')
             this.errors.forEach(error => {
-                console.log('\t❌  ' + error)
+                console.log('\t' + error)
             });
             console.log('\n')
         }
