@@ -5,9 +5,11 @@ var Context_1 = require("./Context");
 var ApexFile = (function () {
     function ApexFile(fileName, filePath) {
         this.errors = new Array();
-        this.fileName = fileName;
-        this.filePath = filePath;
-        this.analyze(this.loadFile());
+        if (fileName && filePath) {
+            this.fileName = fileName;
+            this.filePath = filePath;
+            this.analyze(this.loadFile());
+        }
     }
     ApexFile.prototype.loadFile = function () {
         try {
@@ -22,6 +24,7 @@ var ApexFile = (function () {
     ApexFile.prototype.analyze = function (fileAsString) {
         fileAsString = this.replaceStrings(fileAsString);
         this.mainContext = new Context_1.Context(fileAsString.split('\n'));
+        this.errors = this.mainContext.getErrors();
     };
     ApexFile.prototype.replaceStrings = function (fileAsString) {
         return fileAsString.replace(/'.{1,}'/g, '');
@@ -30,7 +33,6 @@ var ApexFile = (function () {
         return this.fileName;
     };
     ApexFile.prototype.printReport = function () {
-        this.errors = this.mainContext.getErrors();
         if (this.errors.length > 0 && process.exitCode != -1) {
             process.exitCode = -1;
         }
@@ -44,6 +46,9 @@ var ApexFile = (function () {
             });
             console.log('\n');
         }
+    };
+    ApexFile.prototype.getErrorCount = function () {
+        return this.errors.length;
     };
     return ApexFile;
 }());
