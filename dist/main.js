@@ -13,8 +13,10 @@ if (process.argv.length < 3) {
 if (fs.lstatSync(pathString).isDirectory()) {
     console.log("📂  - Running on folder " + process.argv[2] + "...");
     fs.readdirSync(pathString).forEach(function (file) {
-        var classFile = new ApexFile_1.ApexFile(file, pathString + '/' + file);
-        processedFiles.push(classFile);
+        if (file.match(/\.cls$/i)) {
+            var classFile = new ApexFile_1.ApexFile(file, pathString + '/' + file);
+            processedFiles.push(classFile);
+        }
     });
 }
 else {
