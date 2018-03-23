@@ -14,8 +14,10 @@ if (process.argv.length < 3) {
 if (fs.lstatSync(pathString).isDirectory()) {
     console.log("📂  - Running on folder " + process.argv[2] + "...")
     fs.readdirSync(pathString).forEach(file => {
-        let classFile = new ApexFile(file, pathString + '/' + file)
-        processedFiles.push(classFile)
+        if (file.match(/\.cls$/i)) {
+            let classFile = new ApexFile(file, pathString + '/' + file)
+            processedFiles.push(classFile)
+        }
     })
 } else {
     console.log("📄  - Running on file " + process.argv[2] + "...")
