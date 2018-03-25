@@ -1,4 +1,4 @@
-#! /usr/local/bin/node
+#!/usr/bin/env node
 import * as fs from "fs"
 import { ApexFile } from "./ApexFile"
 import { LinterError } from "./LinterError";
