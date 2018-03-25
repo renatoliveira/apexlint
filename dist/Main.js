@@ -3,12 +3,13 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var fs = require("fs");
 var ApexFile_1 = require("./ApexFile");
+var chalk_1 = require("chalk");
 var mode = null;
 var pathString = process.argv[2];
 var processedFiles = new Array();
 var filesWithErrorsCount = 0;
 if (process.argv.length < 3) {
-    console.error("❗️  Should specify which file or folder to run.");
+    console.log(chalk_1.default.yellow('\n\tShould specify a file or folder.') + '\n\n\tUsage:\n\t\t\'apexlint <folder/file>\'\n');
     process.exit();
 }
 if (fs.lstatSync(pathString).isDirectory()) {

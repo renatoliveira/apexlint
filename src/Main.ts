@@ -2,6 +2,7 @@
 import * as fs from "fs"
 import { ApexFile } from "./ApexFile"
 import { LinterError } from "./LinterError";
+import chalk from "chalk";
 
 var mode: String = null
 var pathString: fs.PathLike = process.argv[2]
@@ -9,7 +10,7 @@ var processedFiles: Array<ApexFile> = new Array<ApexFile>()
 var filesWithErrorsCount: number = 0
 
 if (process.argv.length < 3) {
-    console.error("❗️  Should specify which file or folder to run.")
+    console.log(chalk.yellow('\n\tShould specify a file or folder.') + '\n\n\tUsage:\n\t\t\'apexlint <folder/file>\'\n')
     process.exit()
 }
 if (fs.lstatSync(pathString).isDirectory()) {
