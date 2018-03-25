@@ -28,7 +28,7 @@ var ApexFile = (function () {
         this.errors = this.mainContext.getErrors();
     };
     ApexFile.prototype.replaceStrings = function (fileAsString) {
-        return fileAsString.replace(/'.{1,}'/g, '');
+        return fileAsString.replace(/'.{1,}'/g, '').replace(/\t/gy, '    ');
     };
     ApexFile.prototype.getName = function () {
         return this.fileName;

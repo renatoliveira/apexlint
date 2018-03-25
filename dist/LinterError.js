@@ -1,19 +1,25 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var LinterError = (function () {
-    function LinterError(lineNumber, message) {
+    function LinterError(lineNumber, errorMessage, content) {
         if (lineNumber) {
-            this.lineError = lineNumber;
+            this.lineNumber = lineNumber;
         }
-        if (message) {
-            this.message = message;
+        if (errorMessage) {
+            this.errorMessage = errorMessage;
+        }
+        if (content) {
+            this.lineContent = content;
         }
     }
     LinterError.prototype.toString = function () {
-        return this.lineError + ": " + this.message;
+        return this.lineNumber + ": " + this.errorMessage;
     };
-    LinterError.prototype.getLine = function () {
-        return this.lineError;
+    LinterError.prototype.getLineNumber = function () {
+        return this.lineNumber;
+    };
+    LinterError.prototype.getLineContent = function () {
+        return this.lineContent;
     };
     return LinterError;
 }());
