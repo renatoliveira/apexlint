@@ -110,3 +110,23 @@ describe("SOQL queries.", () => {
         })
     })
 })
+
+describe("File parsing", () => {
+    it("Should replace all tab characters at the beginning of lines with four spaces.", () => {
+        let fileAsStrings: Array<string> = new Array<string>(
+            'public class QuerylessClass {',
+            '\tpublic List<Account> getAccounts () {',
+            '\t\tsfab_FabricatedSObjectStub child1 = new sfab_FabricatedSObjectStub(Account.class, new Map<String, Object> { \'Name\' => \'Foo-1\' });',
+            '\t\treturn new List<Account>();',
+            '\t}',
+            '}'
+        )
+        let fileContext = new Context(fileAsStrings)
+        let errors: Array<LinterError> = fileContext.getErrors()
+        expect(errors.length).to.equal(1)
+        expect(errors[0].getLineContent().replace(/\t/gy, '    ')).to.equal(fileAsStrings[2].replace(/\t/gy, '    '))
+        expect(errors[0].getLineContent().replace(/\t/gy, '    ').length).to.equal(137)
+        expect(errors[0].getLineNumber()).to.equal(3)
+        expect(errors[0].toString()).to.contain('Line exceeds the limit of 120 characters')
+    })
+})

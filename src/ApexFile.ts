@@ -53,7 +53,7 @@ export class ApexFile {
      * @param fileAsString file string
      */
     private replaceStrings (fileAsString: string): string {
-        return fileAsString.replace(/'.{1,}'/g, '')
+        return fileAsString.replace(/'.{1,}'/g, '').replace(/\t/gy, '    ')
     }
 
     /**
