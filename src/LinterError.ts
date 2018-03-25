@@ -1,21 +1,29 @@
 export class LinterError {
-    private lineError: number
-    private message: string
+    private lineNumber: number
+    private lineContent: string
+    private errorMessage: string
 
-    constructor (lineNumber?: number, message?: string) {
+    constructor (lineNumber?: number, errorMessage?: string, content?: string) {
         if (lineNumber) {
-            this.lineError = lineNumber
+            this.lineNumber = lineNumber
         }
-        if (message) {
-            this.message = message
+        if (errorMessage) {
+            this.errorMessage = errorMessage
+        }
+        if (content) {
+            this.lineContent = content
         }
     }
 
     public toString (): string {
-        return `${this.lineError}: ${this.message}`
+        return `${this.lineNumber}: ${this.errorMessage}`
     }
 
-    public getLine (): number {
-        return this.lineError
+    public getLineNumber (): number {
+        return this.lineNumber
+    }
+    
+    public getLineContent (): string {
+        return this.lineContent
     }
 }

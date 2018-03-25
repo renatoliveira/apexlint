@@ -1,6 +1,7 @@
 import { expect } from 'chai'
 import { Context } from "../src/Context"
 import { ContextType } from "../src/Context"
+import { LinterError } from '../src/LinterError';
 
 describe("Scope context detection.", () => {
     it("Should detect the class context.", () => {

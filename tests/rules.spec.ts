@@ -2,6 +2,7 @@ import { expect } from 'chai'
 import { Rules } from "../src/Rules"
 import { Context } from "../src/Context"
 import { ContextType } from "../src/Context"
+import { LinterError } from "../src/LinterError"
 
 
 describe("File validation", () => {
@@ -44,6 +45,23 @@ describe("Context rules", () => {
                 '}'
             ))
             expect(erroredContext.getErrors().length).to.equal(1)
+        }),
+        it("Should not ignore strings or whitespaces when counting line length.", () => {
+            let fileAsStrings: Array<string> = new Array<string>(
+                'public class QuerylessClass {',
+                '    public List<Account> getAccounts () {',
+                '        sfab_FabricatedSObjectStub child1 = new sfab_FabricatedSObjectStub(Account.class, new Map<String, Object> { \'Name\' => \'Foo-1\' });',
+                '        return new List<Account>();',
+                '    }',
+                '}'
+            )
+            let fileContext = new Context(fileAsStrings)
+            let errors: Array<LinterError> = fileContext.getErrors()
+            expect(errors.length).to.equal(1)
+            expect(errors[0].getLineContent()).to.equal(fileAsStrings[2])
+            expect(errors[0].getLineContent().length).to.equal(137)
+            expect(errors[0].getLineNumber()).to.equal(3)
+            expect(errors[0].toString()).to.contain('Line exceeds the limit of 120 characters')
         })
     })
 })
@@ -127,7 +145,7 @@ describe("Whitespace", () => {
                 '}'
             ))
             expect(fileContext.getErrors().length).to.equal(1)
-            expect(fileContext.getErrors()[0].getLine()).to.equal(3)
+            expect(fileContext.getErrors()[0].getLineNumber()).to.equal(3)
         }),
         it("Should warn on 'for's.", () => {
             let fileContext = new Context(new Array<string>(
@@ -140,7 +158,7 @@ describe("Whitespace", () => {
                 '}'
             ))
             expect(fileContext.getErrors().length).to.equal(1)
-            expect(fileContext.getErrors()[0].getLine()).to.equal(3)
+            expect(fileContext.getErrors()[0].getLineNumber()).to.equal(3)
         }),
         it("Should warn on 'else's.", () => {
             let fileContext = new Context(new Array<string>(
@@ -155,7 +173,7 @@ describe("Whitespace", () => {
                 '}'
             ))
             expect(fileContext.getErrors().length).to.equal(1)
-            expect(fileContext.getErrors()[0].getLine()).to.equal(5)
+            expect(fileContext.getErrors()[0].getLineNumber()).to.equal(5)
         }),
         it("Should warn on 'else's.", () => {
             let fileContext = new Context(new Array<string>(
@@ -170,7 +188,7 @@ describe("Whitespace", () => {
                 '}'
             ))
             expect(fileContext.getErrors().length).to.equal(1)
-            expect(fileContext.getErrors()[0].getLine()).to.equal(5)
+            expect(fileContext.getErrors()[0].getLineNumber()).to.equal(5)
         }),
         it("Should warn on 'else's.", () => {
             let fileContext = new Context(new Array<string>(
@@ -185,8 +203,8 @@ describe("Whitespace", () => {
                 '}'
             ))
             expect(fileContext.getErrors().length).to.equal(2)
-            expect(fileContext.getErrors()[0].getLine()).to.equal(5)
-            expect(fileContext.getErrors()[1].getLine()).to.equal(5)
+            expect(fileContext.getErrors()[0].getLineNumber()).to.equal(5)
+            expect(fileContext.getErrors()[1].getLineNumber()).to.equal(5)
         })
     })
 })
