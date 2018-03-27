@@ -12,19 +12,24 @@ if (process.argv.length < 3) {
     console.log(chalk_1.default.yellow('\n\tShould specify a file or folder.') + '\n\n\tUsage:\n\t\t\'apexlint <folder/file>\'\n');
     process.exit();
 }
-if (fs.lstatSync(pathString).isDirectory()) {
-    console.log("Running on folder " + process.argv[2] + "...");
-    fs.readdirSync(pathString).forEach(function (file) {
-        if (file.match(/\.cls$/i)) {
-            var classFile = new ApexFile_1.ApexFile(file, pathString + '/' + file);
-            processedFiles.push(classFile);
-        }
-    });
+try {
+    if (fs.lstatSync(pathString).isDirectory()) {
+        console.log("Running on folder " + process.argv[2] + "...");
+        fs.readdirSync(pathString).forEach(function (file) {
+            if (file.match(/\.cls$/i)) {
+                var classFile = new ApexFile_1.ApexFile(file, pathString + '/' + file);
+                processedFiles.push(classFile);
+            }
+        });
+    }
+    else {
+        console.log("Running on file " + process.argv[2] + "...");
+        var apexfile = new ApexFile_1.ApexFile(process.argv[2], pathString);
+        processedFiles.push(apexfile);
+    }
 }
-else {
-    console.log("Running on file " + process.argv[2] + "...");
-    var apexfile = new ApexFile_1.ApexFile(process.argv[2], pathString);
-    processedFiles.push(apexfile);
+catch (error) {
+    console.log(chalk_1.default.red(error));
 }
 processedFiles.forEach(function (file) {
     if (file.getErrorCount() > 0) {
