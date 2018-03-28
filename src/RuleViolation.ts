@@ -1,4 +1,4 @@
-export class LinterError {
+export class RuleViolation {
     private lineNumber: number
     private lineContent: string
     private errorMessage: string

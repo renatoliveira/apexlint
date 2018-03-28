@@ -2,7 +2,7 @@ import { expect } from 'chai'
 import { Rules } from "../src/Rules"
 import { Context } from "../src/Context"
 import { ContextType } from "../src/Context"
-import { LinterError } from "../src/LinterError"
+import { RuleViolation } from "../src/RuleViolation"
 
 
 describe("File validation", () => {
@@ -56,7 +56,7 @@ describe("Context rules", () => {
                 '}'
             )
             let fileContext = new Context(fileAsStrings)
-            let errors: Array<LinterError> = fileContext.getErrors()
+            let errors: Array<RuleViolation> = fileContext.getErrors()
             expect(errors.length).to.equal(1)
             expect(errors[0].getLineContent()).to.equal(fileAsStrings[2])
             expect(errors[0].getLineContent().length).to.equal(137)
@@ -206,5 +206,21 @@ describe("Whitespace", () => {
             expect(fileContext.getErrors()[0].getLineNumber()).to.equal(5)
             expect(fileContext.getErrors()[1].getLineNumber()).to.equal(5)
         })
+    })
+})
+
+describe("Ignore errors", () => {
+    it("Should ignore a single error", () => {
+        let fileContext = new Context(new Array<string>(
+            'private class MyClass {',
+            '    //linter-ignore-W0003',
+            '    // TODO: do something',
+            '    public Boolean something() {',
+            '        return true;',
+            '    }',
+            '}'
+        ))
+        expect(fileContext.getTodos()).to.equal(1)
+        expect(fileContext.getErrors().length).to.equal(0)
     })
 })

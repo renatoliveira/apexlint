@@ -1,7 +1,7 @@
 import { expect } from 'chai'
 import { Context } from "../src/Context"
 import { ContextType } from "../src/Context"
-import { LinterError } from '../src/LinterError';
+import { RuleViolation } from '../src/RuleViolation';
 
 describe("Scope context detection.", () => {
     it("Should detect the class context.", () => {
@@ -122,7 +122,7 @@ describe("File parsing", () => {
             '}'
         )
         let fileContext = new Context(fileAsStrings)
-        let errors: Array<LinterError> = fileContext.getErrors()
+        let errors: Array<RuleViolation> = fileContext.getErrors()
         expect(errors.length).to.equal(1)
         expect(errors[0].getLineContent().replace(/\t/gy, '    ')).to.equal(fileAsStrings[2].replace(/\t/gy, '    '))
         expect(errors[0].getLineContent().replace(/\t/gy, '    ').length).to.equal(137)

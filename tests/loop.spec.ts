@@ -1,6 +1,6 @@
 import { expect } from 'chai'
 import { LoopType, Loop, Context, ContextType } from "../src/Context"
-import { LinterError } from '../src/LinterError';
+import { RuleViolation } from '../src/RuleViolation';
 
 describe("Loop Type", () => {
     it("Should detect the do-while kind.", () => {
@@ -44,7 +44,7 @@ describe("Find anonymous SOQL variable.", () => {
             '    something(variable);',
             '}',
         ))
-        let errors: Array<LinterError> = methodContext.getErrors()
+        let errors: Array<RuleViolation> = methodContext.getErrors()
         expect(methodContext.getContext()).to.equal(ContextType.LOOP)
         expect(methodContext.getLoopType()).to.equal(LoopType.FOR_SOQL)
         expect(methodContext.getErrors().length).to.equal(2)

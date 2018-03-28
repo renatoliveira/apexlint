@@ -1,4 +1,4 @@
-import { LinterError } from "./RuleViolation"
+import { RuleViolation } from "./RuleViolation"
 import { Rules } from "./Rules"
 
 export enum ContextType {
@@ -22,7 +22,7 @@ export enum LoopType {
 export class Context {
     private content: Array<string>
     private contexts: Array<Context>
-    private errors: Array<LinterError>
+    private errors: Array<RuleViolation>
     private startLine: number
     private endline: number
     private kind: ContextType
@@ -35,7 +35,7 @@ export class Context {
     constructor (lines?: Array<string>) {
         this.content = new Array<string>()
         this.contexts = new Array<Context>()
-        this.errors = new Array<LinterError>()
+        this.errors = new Array<RuleViolation>()
         this.todos = 0
         if (lines) {
             this.startLine = 1
@@ -199,17 +199,17 @@ export class Context {
      * 
      * @param err new error to the error array
      */
-    public addError (err: LinterError): void {
+    public addError (err: RuleViolation): void {
         this.errors.push(err)
     }
 
     /**
      * Returns the errors found in this context and its children.
      */
-    public getErrors (): Array<LinterError> {
-        var errors = Array<LinterError>()
+    public getErrors (): Array<RuleViolation> {
+        var errors = Array<RuleViolation>()
         if (this.errors === undefined) {
-            this.errors = new Array<LinterError>()
+            this.errors = new Array<RuleViolation>()
         }
         if (this.contexts) {
             this.contexts.forEach(ctx => {
