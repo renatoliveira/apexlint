@@ -131,7 +131,7 @@ describe("File parsing", () => {
     })
 })
 
-describe.only("Find anonymous SOQL variable.", () => {
+describe("Find anonymous SOQL variable.", () => {
     it("Should detect the SOQL inside parenthesis.", () => {
         let methodContext: Context = new Context(new Array<string>(
             'for (Object__c variable : [SELECT Id, Field__c FROM Object__c WHERE Something__c = \'none\']) {',
