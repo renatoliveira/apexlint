@@ -86,4 +86,12 @@ export class Rules {
             ))
         }
     }
+
+    public static inlineSOQLInsideLoop (line: string, index: number, ctx: Context) {
+        ctx.addError(new LinterError(
+            index + 1,
+            'SOQL inside loops are not allowed.',
+            line
+        ))
+    }
 }

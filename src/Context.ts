@@ -7,6 +7,14 @@ export enum ContextType {
     LOOP
 }
 
+export enum LoopType {
+    DO_WHILE,
+    WHILE,
+    FOR_CONDITION,
+    FOR_ARRAY,
+    FOR_SOQL
+}
+
 /**
  * The Context class represents code inside brackets.
  * Valid contexts are represented on the enumerator above.
@@ -21,6 +29,8 @@ export class Context {
     private skipThisContext: boolean
     private soqlQueriesCount: number
     private todos: number
+
+    private loop: Loop
 
     constructor (lines?: Array<string>) {
         this.content = new Array<string>()
@@ -221,6 +231,7 @@ export class Context {
                 this.kind = ContextType.METHOD
             } else if (startLine.toLowerCase().match(/((for|while)\s+?\(|do\s+?\{)/g) != null) {
                 this.kind = ContextType.LOOP
+                this.loop = new Loop(this)
             }
         }
     }
@@ -288,5 +299,56 @@ export class Context {
      */
     public getChildContexts (): Array<Context> {
         return this.contexts
+    }
+
+    public getStartLine (): string {
+        if (this.content) {
+            return this.content[0]
+        }
+        return ''
+    }
+
+    public getLoopType (): LoopType {
+        if (this.kind == ContextType.LOOP) {
+            return this.loop.getKind()
+        }
+    }
+
+    public getStartLineNumber (): number {
+        return this.startLine
+    }
+}
+
+export class Loop {
+    private booleanCondition: string
+    private initialization: string
+    private increment: string
+    private inlineQuery: string
+    private ctx: Context
+    private kind: LoopType
+
+    constructor (context: Context) {
+        this.ctx = context
+        this.parse()
+    }
+
+    private parse (): void {
+        let startLine = this.ctx.getStartLine()
+        if (startLine.search(';') != -1) {
+            this.kind = LoopType.FOR_CONDITION
+        } else if (startLine.search(':') > -1) {
+            if (startLine.match(/(:\s+\w+\))|(:\s+(\w+\.*){1,}\(\)\))/g) != null) {
+                this.kind = LoopType.FOR_ARRAY
+            } else if (startLine.toLowerCase().search('select') != -1) {
+                this.kind = LoopType.FOR_SOQL
+                Rules.inlineSOQLInsideLoop(startLine, this.ctx.getStartLineNumber(), this.ctx)
+            }
+        } else if (startLine.match(/do\s+?\{/i) != null) {
+            this.kind = LoopType.DO_WHILE
+        }
+    }
+
+    public getKind (): LoopType {
+        return this.kind
     }
 }
