@@ -210,7 +210,7 @@ describe("Whitespace", () => {
 })
 
 describe("Ignore errors", () => {
-    it("Should ignore a single error", () => {
+    it("Should ignore a single error.", () => {
         let fileContext = new Context(new Array<string>(
             'private class MyClass {',
             '    //linter-ignore-W0003',
@@ -222,5 +222,38 @@ describe("Ignore errors", () => {
         ))
         expect(fileContext.getTodos()).to.equal(1)
         expect(fileContext.getErrors().length).to.equal(0)
+    }),
+    it("Should ignore two or more errors.", () => {
+        let methodContext: Context = new Context(new Array<string>(
+            'private class MyClass {',
+            '    public Boolean something() {',
+            '        //linter-ignore-W0001,E0004',
+            '        for (Object__c variable : [SELECT Id, Field__c FROM Object__c WHERE Something__c = \'none\']) {',
+            '            something(variable);',
+            '        }',
+            '    }',
+            '}'
+        ))
+        let errors: Array<RuleViolation> = methodContext.getErrors()
+        expect(methodContext.getErrors().length).to.equal(0)
+    }),
+    it("Should ignore one error when there are two on the same line, but just one is ignored.", () => {
+        let methodContext: Context = new Context(new Array<string>(
+            'private class MyClass {',
+            '    public Boolean something() {',
+            '        //linter-ignore-E0004',
+            '        for (Object__c variable : [SELECT Id, Field__c FROM Object__c WHERE Something__c = \'none\']) {',
+            '            something(variable);',
+            '        }',
+            '    }',
+            '}'
+        ))
+        let errors: Array<RuleViolation> = methodContext.getErrors()
+        // TODO: Find a way to get the parent context, so we can get
+        // the first line right before the beginning of a loop context.
+        // In a loop context, the first line is always a 'do', 'while' 
+        // or 'for', so the comment is omitted from it, but still 
+        //available at the parent context.
+        expect(methodContext.getErrors().length).to.equal(0)
     })
 })

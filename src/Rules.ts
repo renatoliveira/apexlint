@@ -42,9 +42,7 @@ export class Rules {
     public static lineWithTODO (line: string, index: number, ctx: Context): void {
         if (line.match(/\/\/\s?TODO\s?:/gi)) {
             ctx.foundTodo();
-            console.log('Found todo')
             if (!this.isIgnored(ctx, index, 'W0003')) {
-                console.log('after ignored')
                 ctx.addError(new RuleViolation(
                     'W0003',
                     'TODO found, with missing feature.',
@@ -127,13 +125,14 @@ export class Rules {
     }
 
     public static inlineSOQLInsideLoop (line: string, index: number, ctx: Context): void {
-        if (this.isIgnored(ctx, index, 'E0004')) return
-        ctx.addError(new RuleViolation(
-            'E0004',
-            'SOQL inside loops are not allowed.',
-            index + 1,
-            line
-        ))
+        if (!this.isIgnored(ctx, index, 'E0004')) {
+            ctx.addError(new RuleViolation(
+                'E0004',
+                'SOQL inside loops are not allowed.',
+                index + 1,
+                line
+            ))
+        }
     }
 
     private static isIgnored (ctx: Context, lineNumber: number, errorCode: string): boolean {
