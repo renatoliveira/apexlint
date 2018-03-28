@@ -40,5 +40,5 @@ processedFiles.forEach(file => {
 if (processedFiles.length > 1) {
     let passingFiles: number = processedFiles.length - filesWithErrorsCount
     let passingPercentage: number = (filesWithErrorsCount * 100) / processedFiles.length
-    console.log(`\n\t${processedFiles.length - filesWithErrorsCount}/${processedFiles.length} (${passingPercentage}%) passing\n`)
+    console.log(`\n\t${processedFiles.length - filesWithErrorsCount}/${processedFiles.length} (${passingPercentage.toFixed(2)}%) passing\n`)
 }
