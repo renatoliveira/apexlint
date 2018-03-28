@@ -1,4 +1,4 @@
-import { LinterError } from "./LinterError"
+import { LinterError } from "./RuleViolation"
 import { Rules } from "./Rules"
 
 export enum ContextType {
@@ -185,11 +185,11 @@ export class Context {
 
         if (leftBrackets !== null && rightBrackets !== null) {
             if (leftBrackets.length != rightBrackets.length) {
-                this.errors.push(new LinterError(-1, 'Brackets ("{" and "}") count don\'t match.'))
+                Rules.bracketsDontMatch(-1, this)
                 this.skipThisContext = true
             }
         } else if (leftBrackets === null || rightBrackets === null) {
-            this.errors.push(new LinterError(-1, 'Class is invalid.'))
+            Rules.invalidClass(-1, this)
             this.skipThisContext = true
         }
     }

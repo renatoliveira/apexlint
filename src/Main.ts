@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import * as fs from "fs"
 import { ApexFile } from "./ApexFile"
-import { LinterError } from "./LinterError";
+import { LinterError } from "./RuleViolation";
 import chalk from "chalk";
 
 var mode: String = null

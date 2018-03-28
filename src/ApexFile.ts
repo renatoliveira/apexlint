@@ -1,7 +1,7 @@
 import * as fs from "fs"
 import { start } from "repl";
 import { Context } from "./Context"
-import { LinterError } from "./LinterError"
+import { LinterError } from "./RuleViolation"
 import chalk, { Chalk } from "chalk"
 
 export class ApexFile {
