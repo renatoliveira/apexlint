@@ -130,3 +130,15 @@ describe("File parsing", () => {
         expect(errors[0].toString()).to.contain('Line exceeds the limit of 120 characters')
     })
 })
+
+describe.only("Find anonymous SOQL variable.", () => {
+    it("Should detect the SOQL inside parenthesis.", () => {
+        let methodContext: Context = new Context(new Array<string>(
+            'for (Object__c variable : [SELECT Id, Field__c FROM Object__c WHERE Something__c = \'none\']) {',
+            '    something(variable);',
+            '}',
+        ))
+        let errors: Array<LinterError> = methodContext.getErrors()
+        expect(methodContext.getContext()).to.equal(ContextType.LOOP)
+    })
+})

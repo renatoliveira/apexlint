@@ -3,7 +3,8 @@ import { Rules } from "./Rules"
 
 export enum ContextType {
     CLASS,
-    METHOD
+    METHOD,
+    LOOP
 }
 
 /**
@@ -216,8 +217,10 @@ export class Context {
         if (startLine != undefined) {
             if (startLine.toLowerCase().search('class') != -1) {
                 this.kind = ContextType.CLASS
-            } else if (startLine.toLowerCase().search('class') == -1 && startLine.toLowerCase().match(/(public|private|global)\s?(override|static)?/g) != null) {
+            } else if (startLine.toLowerCase().match(/(public|private|global)\s?(override|static)?/g) != null) {
                 this.kind = ContextType.METHOD
+            } else if (startLine.toLowerCase().match(/((for|while)\s+?\(|do\s+?\{)/g) != null) {
+                this.kind = ContextType.LOOP
             }
         }
     }

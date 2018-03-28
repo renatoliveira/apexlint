@@ -38,5 +38,11 @@ public without sharing class SomeWithoutSharingClass {
         ];
     }
 
+    public void someMethodWithSOQLInsideLoop () {
+        for (Object__c variable : [SELECT Id, Field__c FROM Object__c WHERE Something__c = 'none']) {
+            something(variable);
+        }
+    }
+
     // TODO: Create methods with return
 }
