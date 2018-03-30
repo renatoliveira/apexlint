@@ -1,7 +1,7 @@
 import * as fs from "fs"
 import { start } from "repl";
 import { Context } from "./Context"
-import { LinterError } from "./LinterError"
+import { RuleViolation } from "./RuleViolation"
 import chalk, { Chalk } from "chalk"
 
 export class ApexFile {
@@ -9,10 +9,10 @@ export class ApexFile {
     private filePath: fs.PathLike
     private fileName: string
     private mainContext: Context
-    private errors: Array<LinterError>
+    private errors: Array<RuleViolation>
 
     constructor (fileName?: string, filePath?: fs.PathLike) {
-        this.errors = new Array<LinterError>()
+        this.errors = new Array<RuleViolation>()
         if (fileName && filePath) {
             this.fileName = fileName
             this.filePath = filePath

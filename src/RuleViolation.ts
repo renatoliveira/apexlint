@@ -1,22 +1,22 @@
-export class LinterError {
+export class RuleViolation {
     private lineNumber: number
     private lineContent: string
     private errorMessage: string
+    private errorCode: string
 
-    constructor (lineNumber?: number, errorMessage?: string, content?: string) {
+    constructor (errorCode: string, errorMessage: string, lineNumber?: number, content?: string) {
         if (lineNumber) {
             this.lineNumber = lineNumber
-        }
-        if (errorMessage) {
-            this.errorMessage = errorMessage
         }
         if (content) {
             this.lineContent = content
         }
+        this.errorMessage = errorMessage
+        this.errorCode = errorCode
     }
 
     public toString (): string {
-        return `${this.lineNumber}: ${this.errorMessage}`
+        return `${this.errorCode} at ${this.lineNumber}: ${this.errorMessage}`
     }
 
     public getLineNumber (): number {

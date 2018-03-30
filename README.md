@@ -36,6 +36,33 @@ or, with yarn:
 
 ```yarn global remove apexlint```
 
+## Error codes
+
+This tool detects some undesired patterns in your Apex code. Sometimes the code is designed in a way which you can't really refactor it at the moment, or you simply don't want to. 
+
+Each error detected has a different code, and you can supress those detections with comments in your Apex code, like the following:
+
+```java
+//linter-ignore-W0001
+List<Object> aList = [SELECT Id, Field FROM Object];
+```
+
+This line would normally be detected by the tool as codes `W0001` and `W0002`, but now is detected only as `W0002`.
+
+Comments to ignore errors should preferrably be made on the line above the error detection, so the following won't work, for example:
+
+```java
+// notice the extra line between the comment and the actual line:
+
+//linter-ignore-W0001
+
+List<Object> aList = [SELECT Id, Field FROM Object];
+
+// comment on the same line as the error
+
+List<Object> aList = [SELECT Id, Field FROM Object]; //linter-ignore-W0001
+```
+
 ## License
 
 Copyright 2018 Renato Oliveira

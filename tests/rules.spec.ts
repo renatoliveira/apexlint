@@ -2,7 +2,7 @@ import { expect } from 'chai'
 import { Rules } from "../src/Rules"
 import { Context } from "../src/Context"
 import { ContextType } from "../src/Context"
-import { LinterError } from "../src/LinterError"
+import { RuleViolation } from "../src/RuleViolation"
 
 
 describe("File validation", () => {
@@ -56,7 +56,7 @@ describe("Context rules", () => {
                 '}'
             )
             let fileContext = new Context(fileAsStrings)
-            let errors: Array<LinterError> = fileContext.getErrors()
+            let errors: Array<RuleViolation> = fileContext.getErrors()
             expect(errors.length).to.equal(1)
             expect(errors[0].getLineContent()).to.equal(fileAsStrings[2])
             expect(errors[0].getLineContent().length).to.equal(137)
@@ -206,5 +206,58 @@ describe("Whitespace", () => {
             expect(fileContext.getErrors()[0].getLineNumber()).to.equal(5)
             expect(fileContext.getErrors()[1].getLineNumber()).to.equal(5)
         })
+    })
+})
+
+describe("Ignore errors", () => {
+    it("Should ignore a single error.", () => {
+        let fileContext = new Context(new Array<string>(
+            'private class MyClass {',
+            '    //linter-ignore-W0003',
+            '    // TODO: do something',
+            '    public Boolean something() {',
+            '        return true;',
+            '    }',
+            '}'
+        ))
+        expect(fileContext.getTodos()).to.equal(1)
+        expect(fileContext.getErrors().length).to.equal(0)
+        expect(fileContext.getIgnoredErrors().length).to.equal(1)
+    }),
+    it("Should ignore two or more errors.", () => {
+        let methodContext: Context = new Context(new Array<string>(
+            'private class MyClass {',
+            '    public Boolean something() {',
+            '        //linter-ignore-E0003,W0001',
+            '        List<Object> a = [SELECT Id, Field__c, AnotherField__c, AnotherField__c, AnotherField__c, AnotherField__c, AnotherField__c FROM Object__c WHERE Something__c = 0]',
+            '    }',
+            '}'
+        ))
+        let errors: Array<RuleViolation> = methodContext.getErrors()
+        expect(methodContext.getErrors().length).to.equal(0)
+        console.log('Ignored errors: ' + methodContext.getIgnoredErrors())
+        expect(methodContext.getIgnoredErrors().length).to.equal(2)
+    }),
+    it("Should ignore one error when there are two on the same line, but just one is ignored.", () => {
+        let methodContextWithIgnoredError: Context = new Context(new Array<string>(
+            'private class MyClass {',
+            '    public Boolean something() {',
+            '        //linter-ignore-E0003',
+            '        List<Object> a = [SELECT Id, Field__c, AnotherField__c, AnotherField__c, AnotherField__c, AnotherField__c, AnotherField__c FROM Object__c WHERE Something__c = 0]',
+            '    }',
+            '}'
+        ))
+        let methodContextWithoutIgnoredError: Context = new Context(new Array<string>(
+            'private class MyClass {',
+            '    public Boolean something() {',
+            '        List<Object> a = [SELECT Id, Field__c, AnotherField__c, AnotherField__c, AnotherField__c, AnotherField__c, AnotherField__c FROM Object__c WHERE Something__c = 0]',
+            '    }',
+            '}'
+        ))
+        let firstContextErrors: Array<RuleViolation> = methodContextWithIgnoredError.getErrors()
+        let secondContextErrors: Array<RuleViolation> = methodContextWithoutIgnoredError.getErrors()
+        expect(methodContextWithIgnoredError.getErrors().length).to.equal(1)
+        expect(methodContextWithIgnoredError.getIgnoredErrors().length).to.equal(1)
+        expect(methodContextWithoutIgnoredError.getErrors().length).to.equal(2)
     })
 })

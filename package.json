@@ -1,6 +1,6 @@
 {
   "name": "apexlint",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "description": "An Apex linter written in TypeScript.",
   "main": "main.js",
   "author": "Renato Oliveira",
