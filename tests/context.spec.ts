@@ -10,7 +10,7 @@ describe("Scope context detection.", () => {
             '    // ...',
             '}'
         ))
-        expect(testContext.getContext()).to.equal(ContextType.CLASS)
+        expect(testContext.getContextType()).to.equal(ContextType.CLASS)
     }),
     it("Should detect the method context.", () => {
         let testContext = new Context(new Array<string>(
@@ -18,7 +18,7 @@ describe("Scope context detection.", () => {
             '        empty();',
             '    }',
         ))
-        expect(testContext.getContext()).to.equal(ContextType.METHOD)
+        expect(testContext.getContextType()).to.equal(ContextType.METHOD)
     }),
     it("Should detect the class and method contexts.", () => {
         let fileContext = new Context(new Array<string>(
@@ -28,7 +28,7 @@ describe("Scope context detection.", () => {
             '    }',
             '}'
         ))
-        expect(fileContext.getContext()).to.equal(ContextType.CLASS)
+        expect(fileContext.getContextType()).to.equal(ContextType.CLASS)
         // the class context should contain the method context
         let fileContextChildren = fileContext.getChildContexts()
         
@@ -39,7 +39,7 @@ describe("Scope context detection.", () => {
         expect(fileContextChildren[0].getChildContexts().length).to.equal(0)
 
         // the method context should have be flagged accordingly
-        expect(fileContextChildren[0].getContext()).to.equal(ContextType.METHOD)
+        expect(fileContextChildren[0].getContextType()).to.equal(ContextType.METHOD)
     })
 })
 
@@ -61,6 +61,35 @@ describe("Context sorting/nesting", () => {
             '}'
         ))
         expect(classContext.getChildContexts().length).to.equal(0)
+    }),
+    it("Should set context parents correctly.", () => {
+        let classContext = new Context(new Array<string>(
+            'private class QueryClass {',
+            '    public List<Account> getAccounts() {',
+            '        return [SELECT Id FROM Account];',
+            '    }',
+            '}'
+        ))
+        let innerContexts: Array<Context> = classContext.getChildContexts()
+        expect(innerContexts.length).to.equal(1)
+        expect(innerContexts[0].getParentContext()).not.to.equal(undefined)
+    }),
+    it("Should set context parents correctly for classes with deeper scopes too.", () => {
+        let classContext: Context = new Context(new Array<string>(
+            'private class MyClass {',
+            '    public Boolean something() {',
+            '        for (Object__c variable : [SELECT Id, Field__c FROM Object__c WHERE Something__c = \'none\']) {',
+            '            something(variable);',
+            '        }',
+            '    }',
+            '}'
+        ))
+        let classInnerContexts: Array<Context> = classContext.getChildContexts()
+        expect(classInnerContexts.length).to.equal(1)
+        expect(classInnerContexts[0].getParentContext()).not.to.equal(undefined)
+        let methodInnerContexts: Array<Context> = classInnerContexts[0].getChildContexts()
+        expect(methodInnerContexts.length).to.equal(1)
+        expect(methodInnerContexts[0].getParentContext()).not.to.equal(undefined)
     })
 })
 

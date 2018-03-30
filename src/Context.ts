@@ -1,5 +1,6 @@
 import { RuleViolation } from "./RuleViolation"
 import { Rules } from "./Rules"
+import chalk from "chalk";
 
 export enum ContextType {
     CLASS,
@@ -23,6 +24,7 @@ export class Context {
     private content: Array<string>
     private contexts: Array<Context>
     private errors: Array<RuleViolation>
+    private ignoredErrors: Array<RuleViolation>
     private startLine: number
     private endline: number
     private kind: ContextType
@@ -30,12 +32,14 @@ export class Context {
     private soqlQueriesCount: number
     private todos: number
 
+    private parentContext: Context
     private loop: Loop
 
     constructor (lines?: Array<string>) {
         this.content = new Array<string>()
         this.contexts = new Array<Context>()
         this.errors = new Array<RuleViolation>()
+        this.ignoredErrors = new Array<RuleViolation>()
         this.todos = 0
         if (lines) {
             this.startLine = 1
@@ -51,8 +55,16 @@ export class Context {
             this.getInnerContexts()
             this.getKind()
         }
+        this.sortContexts()
+        this.analyze()
+    }
+
+    public analyze (): void {
         this.findQueries(this.content)
         this.runRules();
+        this.contexts.forEach(ctx => {
+            ctx.analyze()
+        })
     }
 
     /** 
@@ -80,12 +92,13 @@ export class Context {
                     let ctxLines = this.content.slice(ctx.startLine - 1, ctx.endline)
                     ctx.init(ctxLines)
                 }
-                this.contexts.push(ctx)
-                newcontexts.pop()
+                if (ctx.isValid()) {
+                    this.contexts.push(ctx)
+                    newcontexts.pop()
+                }
             }
             counter++
         }
-        this.sortContexts()
         this.setContextStartAndEnd()
     }
 
@@ -129,7 +142,7 @@ export class Context {
      * Sorts the contexts into parent-children. This will probably ease the
      * organization for methods inside classes, for example.
      */
-    private sortContexts() {
+    public sortContexts() {
         var counter = 0
         while (true) {
             var ctxA = this.contexts[counter]
@@ -138,13 +151,20 @@ export class Context {
                 break
             if (ctxA.isParent(ctxB)) {
                 ctxA.contexts.push(ctxB)
+                ctxB.parentContext = ctxA
                 this.contexts.splice(counter+1, 1)
             } else if (ctxA.isChild(ctxB)) {
                 ctxB.contexts.push(ctxA)
+                ctxA.parentContext = ctxB
                 this.contexts.splice(counter, 1)
             }
             counter++
         }
+        this.contexts.forEach(childContext => {
+            if (childContext.parentContext === undefined) {
+                childContext.parentContext = this
+            }
+        })
     }
 
     /**
@@ -152,13 +172,12 @@ export class Context {
      * @param otherContext context to compare
      */
     public isChild (otherContext: Context): boolean {
-        if (otherContext.startLine < this.startLine &&
-            otherContext.endline > this.endline) {
+        if (otherContext.startLine < this.startLine
+                && otherContext.endline > this.endline) {
             return true
         }
         return false
     }
-
 
     /**
      * Indicates if this context is a parent of the other context.
@@ -179,19 +198,22 @@ export class Context {
      * of brackets.
      */
     private validateContext (): void {
+        this.skipThisContext = !this.isValid()
+    }
+
+    public isValid (): boolean {
         var ctx = this.content.join('')
         var leftBrackets = ctx.match(/{/g)
         var rightBrackets = ctx.match(/}/g)
-
-        if (leftBrackets !== null && rightBrackets !== null) {
-            if (leftBrackets.length != rightBrackets.length) {
-                Rules.bracketsDontMatch(-1, this)
-                this.skipThisContext = true
-            }
+        if (leftBrackets !== null && rightBrackets !== null
+                && leftBrackets.length != rightBrackets.length) {
+            Rules.bracketsDontMatch(-1, this)
+            return false
         } else if (leftBrackets === null || rightBrackets === null) {
             Rules.invalidClass(-1, this)
-            this.skipThisContext = true
+            return false
         }
+        return true
     }
 
     /**
@@ -201,6 +223,16 @@ export class Context {
      */
     public addError (err: RuleViolation): void {
         this.errors.push(err)
+    }
+
+    /**
+     * Adds a new error to the context's array of ignored errors. Those won't
+     * be reported at the end.
+     * 
+     * @param err new ignored error
+     */
+    public addIgnoredError (err: RuleViolation): void {
+        this.ignoredErrors.push(err)
     }
 
     /**
@@ -217,6 +249,22 @@ export class Context {
             })
         }
         return this.errors.concat(errors)
+    }
+
+    /**
+     * Returns the ignored errors found in this context and its children.
+     */
+    public getIgnoredErrors (): Array<RuleViolation> {
+        var errors = Array<RuleViolation>()
+        if (this.ignoredErrors === undefined) {
+            this.ignoredErrors = new Array<RuleViolation>()
+        }
+        if (this.contexts) {
+            this.contexts.forEach(ctx => {
+                errors.concat(ctx.getIgnoredErrors())
+            })
+        }
+        return this.ignoredErrors.concat(errors)
     }
 
     /**
@@ -283,8 +331,15 @@ export class Context {
     /**
      * Returns this context type
      */
-    public getContext (): ContextType {
+    public getContextType (): ContextType {
         return this.kind
+    }
+
+    /**
+     * Returns this context's parent.
+     */
+    public getParentContext (): Context {
+        return this.parentContext
     }
 
     /**
@@ -316,6 +371,17 @@ export class Context {
 
     public getStartLineNumber (): number {
         return this.startLine
+    }
+
+    public toString (): string {
+        if (this.isValid()) {
+            let firstLine: string = this.content[0].substr(0, 32)
+            let lastLine: string = this.content[this.content.length - 1].substr(0, 32)
+            let parentContext: string = this.parentContext != undefined
+                ? this.parentContext.toString()
+                : 'none'
+            return `${this.startLine} ${firstLine} ...\n${this.endline} ${lastLine} ...\nParent: ${chalk.reset(parentContext)}`
+        }
     }
 }
 

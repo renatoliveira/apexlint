@@ -1,5 +1,6 @@
 import { Context } from "./Context";
 import { RuleViolation } from "./RuleViolation";
+import chalk from "chalk";
 
 export class Rules {
 
@@ -103,7 +104,6 @@ export class Rules {
     }
 
     public static invalidClass (index: number, ctx: Context): void {
-        if (this.isIgnored(ctx, index, 'E0002')) return
         ctx.addError(new RuleViolation(
             'E0002',
             'Class is invalid.',
@@ -125,24 +125,29 @@ export class Rules {
     }
 
     public static inlineSOQLInsideLoop (line: string, index: number, ctx: Context): void {
-        if (!this.isIgnored(ctx, index, 'E0004')) {
-            ctx.addError(new RuleViolation(
-                'E0004',
-                'SOQL inside loops are not allowed.',
-                index + 1,
-                line
-            ))
-        }
+        if (this.isIgnored(ctx, index, 'E0004')) return
+        ctx.addError(new RuleViolation(
+            'E0004',
+            'SOQL inside loops are not allowed.',
+            index + 1,
+            line
+        ))
     }
 
     private static isIgnored (ctx: Context, lineNumber: number, errorCode: string): boolean {
-        let lineAbove: string = ctx.getContent()[lineNumber-1]
-        if (lineAbove != undefined
-                && lineAbove.toLowerCase().match(/\/\/\s*linter-ignore-((W|E)\d{4},?\s?)*/g) != null) {
+        let lineAbove: string = this.getLineAboveCurrentScope(ctx)
+            || ctx.getContent()[lineNumber-1]
+        if (lineAbove !== undefined
+                && lineAbove.toLowerCase().match(/\/\/\s*linter-ignore-((W|E)\d{4},?\s?)*/g) !== null) {
             let codes = lineAbove.toLowerCase().match(/(W|E)\d{4}/gi)
             if (codes) {
                 for (const code of codes) {
                     if (code.toLowerCase() === errorCode.toLowerCase()) {
+                        ctx.addIgnoredError(new RuleViolation(
+                            errorCode,
+                            '',
+                            lineNumber
+                        ))
                         return true
                     }
                 }
@@ -150,4 +155,23 @@ export class Rules {
         }
         return false
     }
+
+    /**
+     * Retrieves the line above the start line of the current context.
+     * @param ctx current context being checked
+     * @param lineNumber line in which the ignore flag was detected
+     */
+    private static getLineAboveCurrentScope (ctx: Context): string {
+        let parentContext: Context = ctx.getParentContext()
+        let currentStartLine = ctx.getStartLineNumber()
+        return parentContext !== undefined
+            ? getLine(parentContext, currentStartLine)
+            : undefined
+    }
+}
+
+function getLine (parentContext: Context, currentStartLine: number): string {
+    let line = parentContext.getContent()[currentStartLine - 1]
+    // console.log(chalk.cyanBright(line))
+    return line
 }

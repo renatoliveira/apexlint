@@ -45,7 +45,7 @@ describe("Find anonymous SOQL variable.", () => {
             '}',
         ))
         let errors: Array<RuleViolation> = methodContext.getErrors()
-        expect(methodContext.getContext()).to.equal(ContextType.LOOP)
+        expect(methodContext.getContextType()).to.equal(ContextType.LOOP)
         expect(methodContext.getLoopType()).to.equal(LoopType.FOR_SOQL)
         expect(methodContext.getErrors().length).to.equal(2)
     })

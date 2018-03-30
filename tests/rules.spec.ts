@@ -222,38 +222,42 @@ describe("Ignore errors", () => {
         ))
         expect(fileContext.getTodos()).to.equal(1)
         expect(fileContext.getErrors().length).to.equal(0)
+        expect(fileContext.getIgnoredErrors().length).to.equal(1)
     }),
     it("Should ignore two or more errors.", () => {
         let methodContext: Context = new Context(new Array<string>(
             'private class MyClass {',
             '    public Boolean something() {',
-            '        //linter-ignore-W0001,E0004',
-            '        for (Object__c variable : [SELECT Id, Field__c FROM Object__c WHERE Something__c = \'none\']) {',
-            '            something(variable);',
-            '        }',
+            '        //linter-ignore-E0003,W0001',
+            '        List<Object> a = [SELECT Id, Field__c, AnotherField__c, AnotherField__c, AnotherField__c, AnotherField__c, AnotherField__c FROM Object__c WHERE Something__c = 0]',
             '    }',
             '}'
         ))
         let errors: Array<RuleViolation> = methodContext.getErrors()
         expect(methodContext.getErrors().length).to.equal(0)
+        console.log('Ignored errors: ' + methodContext.getIgnoredErrors())
+        expect(methodContext.getIgnoredErrors().length).to.equal(2)
     }),
     it("Should ignore one error when there are two on the same line, but just one is ignored.", () => {
-        let methodContext: Context = new Context(new Array<string>(
+        let methodContextWithIgnoredError: Context = new Context(new Array<string>(
             'private class MyClass {',
             '    public Boolean something() {',
-            '        //linter-ignore-E0004',
-            '        for (Object__c variable : [SELECT Id, Field__c FROM Object__c WHERE Something__c = \'none\']) {',
-            '            something(variable);',
-            '        }',
+            '        //linter-ignore-E0003',
+            '        List<Object> a = [SELECT Id, Field__c, AnotherField__c, AnotherField__c, AnotherField__c, AnotherField__c, AnotherField__c FROM Object__c WHERE Something__c = 0]',
             '    }',
             '}'
         ))
-        let errors: Array<RuleViolation> = methodContext.getErrors()
-        // TODO: Find a way to get the parent context, so we can get
-        // the first line right before the beginning of a loop context.
-        // In a loop context, the first line is always a 'do', 'while' 
-        // or 'for', so the comment is omitted from it, but still 
-        //available at the parent context.
-        expect(methodContext.getErrors().length).to.equal(0)
+        let methodContextWithoutIgnoredError: Context = new Context(new Array<string>(
+            'private class MyClass {',
+            '    public Boolean something() {',
+            '        List<Object> a = [SELECT Id, Field__c, AnotherField__c, AnotherField__c, AnotherField__c, AnotherField__c, AnotherField__c FROM Object__c WHERE Something__c = 0]',
+            '    }',
+            '}'
+        ))
+        let firstContextErrors: Array<RuleViolation> = methodContextWithIgnoredError.getErrors()
+        let secondContextErrors: Array<RuleViolation> = methodContextWithoutIgnoredError.getErrors()
+        expect(methodContextWithIgnoredError.getErrors().length).to.equal(1)
+        expect(methodContextWithIgnoredError.getIgnoredErrors().length).to.equal(1)
+        expect(methodContextWithoutIgnoredError.getErrors().length).to.equal(2)
     })
 })
