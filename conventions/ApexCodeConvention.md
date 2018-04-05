@@ -488,7 +488,7 @@ Try to make the structure of the program match the intent. Example:
 if (condition) {
     return true;
 } else {
-    retunr false;
+    return false;
 }
 ```
 
